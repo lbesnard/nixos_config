@@ -62,6 +62,8 @@ Simply copy this and run it:
 nix-shell -p git curl
 ```
 
+Then:
+
 ```
 sh <(curl -L https://gitlab.com/Zaney/zaneyos/-/raw/stable-2.1/install-zaneyos.sh)
 ```
