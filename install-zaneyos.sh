@@ -51,8 +51,7 @@ fi
 echo "-----"
 
 echo "Cloning & Entering ZaneyOS Repository"
-git clone https://gitlab.com/zaney/zaneyos.git
-git checkout stable-1.0
+git clone -b stable-1.0 --single-branch https://gitlab.com/zaney/zaneyos.git
 cd zaneyos
 mkdir hosts/$hostName
 cp hosts/default/*.nix hosts/$hostName

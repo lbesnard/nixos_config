@@ -6,12 +6,10 @@
 
 ZaneyOS is a simple way of reproducing my configuration on any NixOS system. This includes the wallpaper, scripts, applications, config files, and more.
 
-<img align="center" width="80%" src="https://gitlab.com/Zaney/zaneyos/-/raw/main/config/home/files/media/demo.jpg" />
-
 </div>
 
-> **This project has a [Wiki](https://zaney.org/zaneyos/). Please read it to find out information on subjects that you may need to learn more about!**
-> **I have put a lot of effort into the [documentation](https://zaney.org/zaneyos/) so it should be accurate. However, please if you notice that something is wrong with it create an issue or reach out to me on Discord.**
+> **This project has a [Wiki](https://zaney.org/wiki/zaneyos-1.0/). Please read it to find out information on subjects that you may need to learn more about!**
+> **I have put a lot of effort into the [documentation](https://zaney.org/wiki/zaneyos-1.0/) so it should be accurate. However, please if you notice that something is wrong with it create an issue or reach out to me on Discord.**
 
 #### 🍖 Requirements
 - You must be running on NixOS.
@@ -39,7 +37,7 @@ ZaneyOS is a simple way of reproducing my configuration on any NixOS system. Thi
 
 ![](./config/home/files/media/demo.mp4)
 
-Please do yourself a favor and [read the wiki](https://zaney.org/zaneyos/).
+Please do yourself a favor and [read the wiki](https://zaney.org/wiki/zaneyos-1.0/).
 
 </div>
 
@@ -67,7 +65,12 @@ Simply copy this and run it:
 
 ```
 nix-shell -p git curl
-sh <(curl -L https://gitlab.com/Zaney/zaneyos/-/raw/main/install-zaneyos.sh)
+```
+
+Then:
+
+```
+sh <(curl -L https://gitlab.com/Zaney/zaneyos/-/raw/stable-1.0/install-zaneyos.sh)
 ```
 
 #### 🦽 Manual:
@@ -81,7 +84,7 @@ nix-shell -p git vim
 Clone this repo & enter it:
 
 ```
-git clone https://gitlab.com/zaney/zaneyos.git
+git clone -b stable-1.0 --single-branch https://gitlab.com/zaney/zaneyos.git
 cd zaneyos
 ```
 
