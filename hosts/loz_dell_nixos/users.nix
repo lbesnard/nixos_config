@@ -78,6 +78,8 @@ in
         # Networking Tools
         dig
         dnsutils
+        wireshark
+        termshark
         croc
         iperf3
         awscli2
@@ -104,6 +106,7 @@ in
 
         # Multimedia & Graphics
         ffmpeg
+        cheese
         imagemagick
         krita
         darktable
