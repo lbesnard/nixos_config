@@ -1,0 +1,47 @@
+zi lucid light-mode wait'2' \
+ atinit'zstyle ":omz:plugins:ssh-agent" lazy yes' for \
+ "OMZ::plugins/ssh-agent/ssh-agent.plugin.zsh"
+
+zi lucid light-mode wait'2' \
+ atinit'zstyle ":omz:plugins:gpg-agent" identities' for \
+ "OMZ::plugins/gpg-agent/gpg-agent.plugin.zsh"
+
+SSH_ENV="$HOME/.ssh/environment"
+
+function start_agent {
+    echo "Initialising new SSH agent..."
+    (umask 066; ssh-agent > "${SSH_ENV}")
+    . "${SSH_ENV}" > /dev/null
+    ssh-add;
+}
+
+# rename ssh tmux panel to hostname
+function ssh() {
+    tmux rename-window "$*"
+    command ssh "$@"
+    #exit
+}
+
+# Source SSH settings, if applicable
+if [ -f "${SSH_ENV}" ]; then
+    . "${SSH_ENV}" > /dev/null
+    ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+        start_agent;
+    }
+else
+    start_agent;
+fi
+
+# add data-services
+if [ ! -z ${SSH_TTY} ]; then
+    source $DATA_SERVICES_DIR/profile.d/* &>/dev/null;
+    source $DATA_SERVICES_DIR/lib/common/* &>/dev/null;
+    compinit $DATA_SERVICES_DIR/profile.d/*;
+fi
+
+
+# https://github.com/schollz/croc
+PROG=croc
+_CLI_ZSH_AUTOCOMPLETE_HACK=1
+#source /etc/zsh/zsh_autocomplete_croc
+

@@ -1,0 +1,754 @@
+[ -f ~/.env ] && source ~/.env
+[ -f ~/.env_private ] && source ~/.env_private
+
+unalias  fd >/dev/null 2>/dev/null # in order to use https://github.com/sharkdp/fd
+
+alias mintupdate='sudo mintupdate-cli --install-recommends -y upgrade'
+
+##########################
+# DOTFILES UPDATE
+##########################
+alias dotfiles_update='cd $DOTFILES_PATH && git pull && bash install; cd -'
+
+##########################
+# UPDATE AppImages
+##########################
+
+# https://github.com/nextcloud/desktop/issues/7231
+alias update_nextcloud="wget https://download.nextcloud.com/desktop/releases/Linux/latest -O $HOME/bin/Nextcloud.AppImage && chmod +x $HOME/bin/*.AppImage"
+#alias update_nextcloud="wget https://download.nextcloud.com/desktop/releases/Linux/Nextcloud-3.13.4-x86_64.AppImage  -O $HOME/bin/Nextcloud.AppImage && chmod +x $HOME/bin/*.AppImage"
+alias update_joplin='curl -s https://api.github.com/repos/laurent22/joplin/releases/latest | grep "browser_download_url.*AppImage" | cut -d : -f 2,3 | tr -d \" | head -1| wget --show-progress -qi - -O $HOME/bin/Joplin.AppImage && chmod +x $HOME/bin/*.AppImage'
+alias update_etcher='curl -s https://api.github.com/repos/balena-io/etcher/releases/latest | grep "browser_download_url.*x64.AppImage" | cut -d : -f 2,3 | tr -d \" | wget --show-progress -qi - -O $HOME/bin/balenaEtcher.AppImage && chmod +x $HOME/bin/*.AppImage'
+alias update_shotcut='curl -s https://api.github.com/repos/mltframework/shotcut/releases/latest | grep "browser_download_url.*AppImage" | cut -d : -f 2,3 | tr -d \" | wget --show-progress -qi - -O $HOME/bin/Shotcut.AppImage && chmod +x $HOME/bin/*.AppImage'
+alias update_appimages='update_nextcloud; update_joplin; update_etcher; update_shotcut'
+
+alias shotcut='Shotcut.AppImage --QT_SCALE_FACTOR 1'
+alias Shotcut='shotcut'
+
+##########################
+# ls and cd aliases
+##########################
+# quick way to get out of current directory
+alias ..='cd ..'
+alias ...='cd ../../../'
+alias ....='cd ../../../../'
+alias .....='cd ../../../../'
+alias .4='cd ../../../../'
+alias .5='cd ../../../../..'
+alias cc='ls -f | wc -l' # ls -f does not stat() and makes it faster
+
+path_to_lsd=$(which lsd 2>/dev/null)
+if [ -x "$path_to_lsd" ] ; then
+    alias ls='lsd'
+    alias l='ls -l'
+    alias ll='ls -l'
+    alias la='ls -a'
+    alias lla='ls -la'
+    alias lt='ls --tree'
+fi
+
+##########################
+# CHEF cooking + Ansible provisionning
+##########################
+alias chef_cd="cd $CHEF_DIR"
+alias chef_private_cd="cd $CHEF_DIR/../chef-private"
+alias talend="chef_cd && ./bin/talend7-pipeline.sh"
+alias chef_imos="chef_cd && rm -f private; ln -s ../chef-private private"
+alias chef_pipeline_box_start="chef_cd && ./bin/write_pipeline_stack_secrets.sh -p nodes/pipeline.json; ./bin/pipeline-box.sh"
+alias chef_pipeline_box_provision="chef_cd && ./bin/write_pipeline_stack_secrets.sh -p nodes/pipeline.json; vagrant provision pipeline"
+alias chef_sample="chef_cd && rm -f private; ln -s private-sample private"
+#alias vagrant_ssh='var=$(find $CHEF_DIR/nodes/ -type f -name "*\.json" -exec basename {} \; | cut -d . -f 1 | fzf) && cd $CHEF_DIR && vagrant ssh $var'
+function vs(){
+  #List all vagrant boxes available in the system including its status, and try to access the selected one via ssh
+  cd $(cat ~/.vagrant.d/data/machine-index/index | jq '.machines[] | {name, vagrantfile_path, state}' | jq '.name + "," + .state  + "," + .vagrantfile_path'| sed 's/^"\(.*\)"$/\1/'| column -s, -t | sort -rk 2 | fzf | awk '{print $3}'); vagrant ssh
+}
+alias vagrant_ssh=vs
+#alias chef_pipeline_bckp_json='cp $CHEF_DIR/private-sample/nodes/pipeline.json $CHEF_DIR/private-sample/nodes/pipeline.json.bckp'
+#alias chef_pipeline_restore_json='cp $CHEF_DIR/private-sample/nodes/pipeline.json.bckp  $CHEF_DIR/private-sample/nodes/pipeline.json'
+
+alias ansible_provision_latop='ansible-playbook -i hosts $ANSIBLE_PATH/local.yml -K'
+alias ansible_provision_remote='ansible-playbook -i hosts $ANSIBLE_PATH/remote.yml'
+[[ `hostname` == "9-aws-syd" ]] && alias stackman="source /opt/stackman/virtualenv__usr_bin_python3/bin/activate;stackman";
+[[ `hostname` == "po-dev-aws-syd" ]] && alias stackman="source /mnt/ebs/pyenv/versions/3.8.10/envs/commandpost_venv/bin/activate;stackman";
+
+##########################
+# IMOS related - pipeline 
+##########################
+alias project_officer_user='sudo -u projectofficer -s'
+
+
+# pipeline
+export PIPELINE_TASK_LOG_PATH=/mnt/ebs/log/pipeline/process
+
+# add ~/.zsh_functions to fpath, and then lazy autoload
+# every file in there as a function. THIS IS A REQUIREMENT
+fpath=(~/.zsh_functions $fpath);
+
+#if command -v gh > /dev/null; then
+#  autoload -U $fpath[1]/*(.:t)
+#fi
+
+# For multiple functions files, just source them
+[ -f $HOME/.zsh_functions/imos_ardc.zsh ] && source $HOME/.zsh_functions/imos_ardc.zsh
+[ -f $HOME/.zsh_functions/pipelines.zsh ] && source $HOME/.zsh_functions/pipelines.zsh
+[ -f $HOME/.zsh_functions/comics.zsh ] && source $HOME/.zsh_functions/comics.zsh
+
+
+# wget for imos buck by simply giving the relative path of an object without the full bucket address
+# $1 imos bucket url
+# $2 output_folder (optional)
+wget_imos_bucket() {
+    local url_suffix=$1; shift;
+    local url_prefix="https://s3-ap-southeast-2.amazonaws.com/imos-data/"
+    local output_folder=$1;
+    [ ! -z $output_folder ] && wget ${url_prefix}${url_suffix} || \
+        wget -P $output_folder ${url_prefix}${url_suffix} 
+}
+
+if [[ -d ~/.local/share/JetBrains/Toolbox/apps/ ]]; then
+    alias pycharm=`fd pycharm.sh ~/.local/share/JetBrains/Toolbox/apps/ &`
+fi
+
+
+function aws_select_profile() {
+    # Define local variables
+    local profiles
+    local selected_profile
+
+    # Read the content of the ~/.aws/config file and extract profile names
+    profiles=$(awk '$1=="[profile" {print substr($2, 1, length($2)-1)}' ~/.aws/config)
+
+    # Use fzf to select a profile
+    selected_profile=$(echo "$profiles" | fzf)
+
+    # Export AWS_PROFILE with the selected profile
+    export AWS_PROFILE="$selected_profile"
+
+    # Optionally, you can print the selected profile for confirmation
+    echo "Selected AWS profile: $selected_profile"
+}
+function aws_select_profile_login() {
+    # Define local variables
+    local profiles
+    local selected_profile
+
+    # Read the content of the ~/.aws/config file and extract profile names
+    profiles=$(awk '$1=="[profile" {print substr($2, 1, length($2)-1)}' ~/.aws/config)
+
+    # Use fzf to select a profile
+    selected_profile=$(echo "$profiles" | fzf)
+
+    # Export AWS_PROFILE with the selected profile
+    export AWS_PROFILE="$selected_profile"
+    aws sso login --profile $AWS_PROFILE --no-browser
+
+    # Optionally, you can print the selected profile for confirmation
+    echo "Selected AWS profile: $selected_profile"
+}
+
+# start jupyter lab
+alias jupyter_lab_start="jupyter notebook --ip=0.0.0.0 --port=8888"
+
+
+##########################
+## github cli
+##########################
+export GIT_USER=`git config --list | grep user.name | cut -d = -f2`
+
+# create gh aliases completion
+if command -v gh > /dev/null; then
+    for al in $(gh alias list | grep -o -e '^[a-z].*:' | cut -d : -f1); do
+        alias gh_$al="gh $al"
+    done
+fi
+
+# forgit aliases https://github.com/wfxr/forgit written manually not to conflict
+# with grc tool
+alias ga=forgit::add
+alias gcf=forgit::checkout::file
+alias gbl=forgit::blame
+alias gd=forgit::diff
+alias glo=forgit::log
+alias grh=forgit::reset::head
+alias grco=forgit::revert::commit  # grco not to conflict with grc
+alias gcp=forgit::cherry::pick
+alias gbl=forgit::blame
+alias gclean=forgit::clean
+
+#########################
+## conda
+#########################
+# create autocompletion fzf for conda envs
+function conda_activate () {
+  conda activate "$(conda info --envs | grep envs | fzf | awk '{print $1}')"
+}
+alias mamba_activate=conda_activate
+
+function conda_destroy () {
+  mamba env remove -n "$(mamba info --envs | grep envs |fzf | awk '{print $1}')"
+}
+alias conda_remove=conda_destroy
+alias mamba_destroy=conda_destroy
+
+##########################
+# Display
+##########################
+alias display_docked_work=". $HOME/.screenlayout/work_screen2_thunder.sh && mouse_setting.sh"
+alias work_workspace='display_docked_work & tmux'
+
+alias display_docked_home=". $HOME/.screenlayout/i3_work.sh && mouse_setting.sh"
+alias home_workspace='display_docked_home & tmux'
+
+alias display_undocked=". $HOME/.screenlayout/i3_laptop_single_screen.sh && mouse_setting.sh"
+
+alias screen_layout='arandr'
+alias brightness_up='sudo light -A 10'
+alias brightness_down='sudo light -U 10'
+alias brightness_chgrp_sys='/usr/bin/ansible-playbook -i hosts $ANSIBLE_PATH/local.yml -K -t i3'
+
+##########################
+# Various
+##########################
+alias rsrc='source ~/.bashrc'
+alias clear_tmp="find /tmp -mtime +1 -and -not -exec fuser -s {} ';' -and -exec rm -Rf {} ';'"
+alias fzfp="fzf -m --preview 'head -100 {}'"
+alias g='git'
+alias sublime='subl'
+alias grep='grep --color=auto'
+alias trim="sed 's/^ *//;s/ *$//'"
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias copy='xclip -sel clip'
+alias cc='copy' && alias yy='copy'
+alias automount='udiskie &'
+alias update_linux='sudo mintupdate-launcher'
+alias linux_version='neofetch'
+alias musescore_dl='npx msdl'
+alias path_env_path="echo $PATH | tr ':' '\n' | fzf"
+[[ -s "$HOMEBREW_PREFIX/etc/grc.zsh" ]] && alias tail='grc tail'
+
+if command -v cheat-linux-amd64 > /dev/null; then
+    alias cheat=cheat-linux-amd64
+fi
+
+alias irssi='screen irssi'
+alias tmux_start="[[ ! $TERM =~ screen ]] && [ -z $TMUX ] && exec tmux -2 attach"
+alias cleanup_cache="brew cleanup && conda clean -a"
+
+alias vita_dock="mplayer tv:// -tv driver=v4l2:device=/dev/video2:width=960:height=544"
+function vita_update_all_games() { 
+    local vita_path=/export/games/emulation/Playstation/PSVITA
+    cd $vita_path
+    for id in `fd -e zip -t f . --full-path $vita_path  | grep -o -E "P[A-Z]{3}[0-9]{5}" | uniq | sort`; do
+        echo updating  $(basename "$(fd -e zip -t f $id --full-path $vita_path --max-depth 1)")
+        $HOME/nopaystation_scripts/nps_update.sh $id
+    done
+}
+
+# file edit function in nvim/vim
+function fe(){ 
+    nvim $(fd -LIH --type f | fzf -m --preview "([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {}))")
+    }
+
+function csv_viewer() {
+    local input_file=$1;
+    cat $input_file | column -t -s, | less -S
+}
+
+#https://github.com/junegunn/fzf/wiki/Examples
+fman() {
+    man -k . | fzf -q "$1" --prompt='man> ' --reverse --preview $'echo {} | tr -d \'()\' | awk \'{printf "%s ", $2} {print $1}\' | xargs -r man | col -bx | bat -l man -p --color always' | tr -d '()' | awk '{printf "%s ", $2} {print $1}' | xargs -r man
+}
+# Get the colors in the opened man page itself
+export MANPAGER="sh -c 'col -bx | bat -l man -p --paging always'"
+
+##########################
+# NETWORK
+##########################
+alias iftop_wlan='iftop -i wlan0'
+alias lynx='lynx -cfg=~/.lynx.cfg'
+alias elinks_google='elinks www.google.com.au'
+alias mac_wlan_random='sudo ifconfig wlp1s0 down && sudo macchanger -r wlp1s0 && sudo ifconfig wlp1s0 up'
+alias ports='netstat -tulanp' # open ports
+alias ssh-add='ssh-add -t 10h'
+alias wifi_restart='sudo systemctl restart wpa_supplicant.service'
+alias wifi_connect_to='nmtui'
+alias wifi_configure='nm-applet'
+
+function host_via_which_route() {
+    local host=$1
+    # get the ip of that host (works with dns and /etc/hosts. In case we get  
+    # multiple IP addresses, we just want one of them
+    host_ip=$(getent ahosts "$host" | awk '{print $1; exit}')
+
+    # only list the interface used to reach a specific host/IP. We only want the
+    # part between dev and src (use grep for that)
+    ip route get "$host_ip" | grep -Po '(?<=(dev )).*(?= src| proto)'
+}
+
+if command -v dig > /dev/null; then
+    alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
+    alias mygeo="curl -w \"\\n\" http://api.hackertarget.com/geoip/\?q=\`myip\`"
+else
+    alias myip="curl ifconfig.me"
+fi
+
+# vpn
+alias s='var=$(grep -e "^Host " ~/.ssh/config | sed "s#Host ##" | fzf) && ssh $var' # ssh with fzf to list known hosts from ssh/config
+[ -f ~/.utas_vpnc.conf ] && alias vpn_utas_connect='sudo vpnc ~/.utas_vpnc.conf --local-port 0' && alias vpn_utas_disconnect='sudo vpnc-disconnect'
+
+alias vpn_bfunk_start='sudo openvpn --cd $DOTFILES_PRIVATE_PATH/openvpn/ --writepid /run/openvpn/home.pid --config lbesnard.ovpn'
+alias wg_bfunk_up='wg-quick up bfunk'
+alias wg_bfunk_start='wg_bfunk_up'
+alias wg_bfunk_down='wg-quick down bfunk'
+alias wg_bfunk_stop='wg_bfunk_down'
+alias wg_bfunk_restart='wg_bfunk_down && wg_bfunk_up'
+alias wg_bfunk_route_force_start='sudo ip route del default; sudo ip route add default via 131.217.38.1 dev eth1; sudo ip route add $SERVER_LOCAL_IP via 11.13.13.4 dev bfunk; sudo ip route add 10.1.1.0/24 via 10.13.13.4 dev bfunk' # could be useful if wifi network has same network as vpn
+
+##########################
+# vim nvim alias
+##########################
+if command -v nvim > /dev/null; then
+    alias vim='nvim'
+    alias vi='nvim'
+    alias v='f -e nvim' # replace default fasd alias from zsh plugin
+fi
+alias vim_plugin_install="vim +'PlugInstall --sync' +'PlugUpdate' +qa"
+
+if command -v bat > /dev/null; then alias cat="bat -p"; fi
+
+##########################
+# timezone
+##########################
+alias tz_paris='TZ="Europe/Paris" date'
+alias tz_hobart='TZ="Australia/Hobart" date'
+alias tz_utc='TZ="UTC" date'
+
+##########################
+# SYSTEM
+##########################
+if command -v htop > /dev/null; then alias top='htop'; fi
+if command -v btop > /dev/null; then alias top='btop'; fi  # replace htop with btop
+if command -v dfc > /dev/null; then alias df='dfc'; fi
+
+if command -v ncdu > /dev/null; then
+    alias gt5=ncdu
+    alias hdd_report=ncdu
+fi
+
+alias temperature='sensors;sudo hddtemp /dev/sda'
+alias shutdown_now='sudo shutdown -h now'
+alias latest_installed_pckg='cat /var/log/apt/history.log | grep "\ install\ "'
+alias killall='killall -SIGUSR1'
+alias lock_screen='gnome-screensaver-command --lock || xscreensaver-command -lock'
+
+
+# should be replaced by kp but kp has some issues on the fzf preview
+fkill() {
+    local pid 
+    if [ "$UID" != "0" ]; then
+        pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
+    else
+        pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+    fi  
+
+    if [ "x$pid" != "x" ]
+    then
+        echo $pid | xargs kill -${1:-9}
+    fi  
+}
+
+#########################
+# DATABASE
+#########################
+if command -v pgcli > /dev/null; then
+    alias psql=pgcli
+fi
+
+# list hosts with fzf from pgpass file and connect to DB. 
+[ -f $HOME/.pgpass ] && export PGPASS_PATH=$HOME/.pgpass && alias psql-connect='var=$(cat $PGPASS_PATH | cut -d : -f1 | grep -v "^#" | fzf) && psql -d `cat $PGPASS_PATH  | grep $var | cut -d':' -f3 | head -1` -h $var -U `cat $PGPASS_PATH  | grep $var | cut -d':' -f4 | head -1`'
+
+##########################
+# file handling
+##########################
+remove_space_from_filename_recur() {
+    find . -depth -name "* *" -execdir rename 's/ /_/g' "{}" \;
+}
+
+remove_file_extension() {
+    local file="$1"; shift
+    mv $file ${file%\.[^.]*}
+}
+
+bulk_rename() {
+  local find_pattern="$1"
+  local replace_pattern="$2"
+
+  if [[ -z "$find_pattern" || -z "$replace_pattern" ]]; then
+    echo "Usage: bulkrename <find_pattern> <replace_pattern>"
+    return 1
+  fi
+
+  fd "$find_pattern" -t f | while read -r file; do
+    new_name=$(echo "$file" | sed "s/$find_pattern/$replace_pattern/")
+    
+    if [[ "$file" != "$new_name" ]]; then
+      echo "$file -> $new_name"
+    fi
+  done | fzf --multi --preview "echo {}" | awk '{print $1, $3}' | while read -r old new; do
+    mv "$old" "$new"
+  done
+}
+
+
+list_error_netcdf() {
+    readlink -f * | cut -d '/' -f6 | sed -e 's/\.nc\..*/\.nc/g'
+}
+##########################
+# NetCDF
+##########################
+ncdumph() {
+    command ncdump -h "$@" | less;
+}
+
+ncbrowse() {
+    local uuid_regexp='[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+    filepath=$( (fd -LHI nc.$uuid_regexp ; fd -LHI -e nc) | fzf --multi=1 --preview "([[ -f {} ]] && ncdump -h {})")
+
+    if [ ! -z "$filepath" ]
+        then
+        [ -f /mnt/ebs/pipeline/bin/activate ] && . /mnt/ebs/pipeline/bin/activate || conda activate ncvue
+        ncvue "$filepath"
+        [ -f /mnt/ebs/pipeline/bin/activate ] && deactivate || conda deactivate
+    fi
+}
+alias ncvue_plot=ncbrowse
+
+
+_cc_activate_env() {
+    local conda_cc=1
+    [ -f /mnt/ebs/pyenv/versions/pipeline_prod_venv/bin/activate ] && . /mnt/ebs/pyenv/versions/pipeline_prod_venv/bin/activate && conda_cc=0
+    [ -f /mnt/ebs/pyenv/versions/pipeline_rc_venv/bin/activate ] && . /mnt/ebs/pyenv/versions/pipeline_rc_venv/bin/activate && conda_cc=0
+
+    if [ $conda_cc -eq "1" ]; then
+        conda activate python-aodndata-conda
+    fi
+}
+
+_cc_deactivate_env() {
+    local conda_cc=1
+    [ -f /mnt/ebs/pyenv/versions/pipeline_prod_venv/bin/activate ] &&  /mnt/ebs/pyenv/bin/pyenv deactivate && conda_cc=0
+    [ -f /mnt/ebs/pyenv/versions/pipeline_rc_venv/bin/activate ] &&  /mnt/ebs/pyenv/bin/pyenv deactivate && conda_cc=0
+
+    if [ $conda_cc -eq "1" ]; then
+        conda deactivate
+    fi
+}
+# compliance checker with fzf
+_cc() {
+    local test=$1;shift
+    #[ -f /mnt/ebs/pipeline/bin/activate ] && . /mnt/ebs/pipeline/bin/activate || conda activate python-aodndata-conda
+    _cc_activate_env
+    local uuid_regexp='[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+    filepath=$( (fd -LHI nc.$uuid_regexp ; fd -LHI -e nc) | fzf --multi=1 --preview "([[ -f {} ]] && ncdump -h {})")
+
+    if [ ! -z "$filepath" ]
+        then
+            #compliance-checker $test $(fd -LHI -e nc | fzf -m --preview "([[ -f {} ]] && ncdump -h {})") 
+            compliance-checker $test $filepath
+            tmux split-window -h "ncdump -h \"$filepath\" | less"
+            #[ -f /mnt/ebs/pipeline/bin/activate ] && deactivate || conda deactivate
+            _cc_deactivate_env
+    fi
+}
+
+cc_cf() {
+    _cc -t=cf:latest
+}
+
+
+cc_cf_1.6() {
+    _cc -t=cf:1.6
+}
+
+# compliance checker running the imos1.4 check
+cc_imos_1.3() {
+    _cc -t=imos:1.3
+}
+
+# compliance checker running the imos1.4 check
+cc_imos_1.4() {
+    _cc -t=imos:1.4
+}
+
+# compliance checker running the ghrsst check
+cc_ghrsst() {
+    _cc -t=ghrsst
+}
+
+
+###########################
+# MUSIC
+###########################
+alias beet_genre_uniq_update="beet ls -f '\$genre' | sort -u > ~/.beets_genre"
+alias split_flac_album='IFS=$(echo -en "\n\b"); for CUE in `find . -type f -name "*.cue"`; do FILE_TO_CONVERT=`basename ${CUE%.*}.flac` && shnsplit -f "$CUE" -t %n-%t -o flac "$FILE_TO_CONVERT" && rm -f "$FILE_TO_CONVERT";done'
+alias split_ape_album='IFS=$(echo -en "\n\b"); for CUE in `find . -type f -name "*.cue"`; do FILE_TO_CONVERT=`basename ${CUE%.*}.ape` && shnsplit -f "$CUE" -t %n-%t -o flac "$FILE_TO_CONVERT" && rm -f "$FILE_TO_CONVERT";done'
+alias split_wv_album='IFS=$(echo -en "\n\b"); for CUE in `find . -type f -name "*.cue"`; do FILE_TO_CONVERT=`basename ${CUE%.*}.wv` && shnsplit -f "$CUE" -t %n-%t -o flac "$FILE_TO_CONVERT" && rm -f "$FILE_TO_CONVERT";done'
+alias split_flac_subfolders='IFS=$(echo -en "\n\b"); for f in `fd -a .cue`; do cd ```dirname $f```; split_flac_album ;done'
+
+function spotify_pl_ls_missing () {
+
+    # download playlists
+    IFS=$(echo -en "\n\b");
+    local pl_path=/media/lbesnard/bfunk_10tb_3/music/beet_library/playlists_navidrome
+    local pl_val=`ls $pl_path | fzf  --multi=1`
+
+    cat "$pl_path/$pl_val" | while read line; do
+       if [[ $line = \#* ]] 
+            then
+            local albumartist=`echo "$line" | grep -o '#.*' | cut -d : -f2,4 | sort | uniq | sed "s/\"title\":/album:/g" | cut -d ',' -f1 | sed "s/\"//g" | sed "s/^ //g"`
+            local album=`echo "$line" | grep -o '#.*' | cut -d : -f2,4 | sort | uniq | sed "s/\"title\":/album:/g" | sed "s/, \"length\"//g" | cut -d ',' -f2 | sed "s/\"//g" | sed "s/^ //g" | sed "s/album: //g"`
+            local albumartist_replace=`echo "${albumartist}" | sed "s/ /+/g"`
+            
+            local url="https://jackett.funkybrownfunk.duckdns.org/UI/Dashboard#search=$albumartist_replace&tracker=rutracker&category=3000&filter=all"
+
+            local str_line=`printf "albumartist: %s, album: %s, url: %s\n" "${albumartist}" "${album}" "$url"`
+            local str="$str\n$str_line"
+        fi
+    done
+
+    echo "$str" | sort | uniq 
+}
+
+
+#alias music_player='mp3blaster'
+alias music_player='flatpak run app.sublimemusic.SublimeMusic'
+alias volume='pavucontrol'
+
+###########################
+# paragliding
+###########################
+alias flightrecorder='cd $HOME/paragliding ; sudo flightrecorder && chown $USER:$USER *.IGC; rsync -avc $HOME/paragliding/ $HOME/Nexctloud/paragliding_igc'
+alias igc_viewer='gpligc'
+alias riverHeight='python $GITHUB_DIR/River_Height_Tasmania/riverHeight.py && /usr/bin/elinks ~/Nexctloud/Public/RiverStatusTasmania.html'
+alias gpsdump_flymaster='cd $HOME/Downloads; ./gpsdump -gy -ca0 -lflight'
+alias paragliding_create_osm_map='$GITHUB_DIR/OSM_Tile_Download/osm_ogie3d.py'
+
+##############################
+# PYTHON
+##############################
+python_venv_init () {
+    local venv_name=$1; shift
+    mkdir venv_name && cd venv_name;
+    sourve venv/vin/activate
+    xargs -a requirements.txt -n 1 pip install
+}
+alias pip_install_requirements='xargs -a requirements.txt -n 1 pip install'
+
+kill_py () {
+    local python_script_name=$1; shift
+    kill -9 $(ps aux | grep '[p]ython.*${python_script_name}\.py'| awk '{print $2}')
+}
+
+
+##############################
+# docker compose
+##############################
+#alias dcp='docker-compose -f /opt/docker-compose.yml '
+#alias dcpull='docker-compose -f /opt/docker-compose.yml pull --parallel'
+#alias dclogs='docker-compose -f /opt/docker-compose.yml logs -tf --tail="50" '
+#alias dtail='docker logs -tf --tail="50" "$@"'
+# replaced by fzf-docker
+alias docker_logs_truncate='sudo sh -c "truncate -s 0 /var/lib/docker/containers/*/*-json.log"' # can save 50Gb of logs easily!!
+alias docker_logs_tail='docker ps --format "{{.Names}}" | fzf | xargs -I {} docker logs -f {}'
+
+# from https://www.reddit.com/r/devops/comments/o5iwbk/useful_fzf_tricks/
+alias docker_sh='docker exec -it $(  docker ps  --format "{{.Names}}" | fzf | awk '"'"'{print $1;}'"'"'  ) sh'
+alias docker_bash='docker exec -it $(  docker ps  --format "{{.Names}}" | fzf | awk '"'"'{print $1;}'"'"'  ) bash'
+alias docker_rm='docker rm $(  docker ps  --format "{{.Names}}" | fzf | awk '"'"'{print $1;}'"'"'  )'
+alias docker_rma='docker rm $(  docker ps -a  --format "{{.Names}}" | fzf | awk '"'"'{print $1;}'"'"'  )'
+alias docker_prune_images='docker image prune --all --force'
+
+
+##############################
+## BFUNK
+##############################
+alias mount_games='mount_point=games;mkdir -p $HOME/bfunk/$mount_point; sudo mount -t nfs $SERVER_LOCAL_IP:/export/$mount_point $HOME/bfunk/$mount_point/'
+#alias start_vpn_torrent='sudo systemctl start vpn_access.service; sudo service transmission-daemon start; myip'
+#alias stop_vpn_torrent='sudo service transmission-daemon stop; sudo systemctl stop vpn_access.service; myip'
+#alias nginx_maintenance='sudo rm -f /etc/nginx/sites-enabled/* && sudo ln -s /etc/nginx/sites-available/omv_maintenance /etc/nginx/sites-enabled/omv_maintenance && sudo service nginx restart;'
+#alias nginx_organizr='sudo rm -f /etc/nginx/sites-enabled/* && sudo ln -s /etc/nginx/sites-available/organizr /etc/nginx/sites-enabled/organizr && sudo service nginx restart;'
+#alias filebot_movie_rename_dryrun='IFS=$(echo -en "\n\b"); for dir in `find -type d`; do filebot -rename $dir --db TheMovieDB --format "/export/torrent/{plex}" --action test; done'
+#alias filebot_movie_rename_move='IFS=$(echo -en "\n\b"); for dir in `find -type d`; do filebot -rename $dir --db TheMovieDB --format "/export/torrent/{plex}" --action move; done'
+#alias filebot_tvshows_rename_dryrun='filebot -rename -r -non-strict . --db TheTVDB --format "/export/torrent/{plex}" --action test'
+#alias filebot_tvshows_rename_move='filebot -rename -r -non-strict . --db TheTVDB --format "/export/torrent/{plex}" --action move'
+
+#AIRSONIC_DATA_DIR=$DOCKER_CONFIG_DIR/airsonic
+NEXCTLOUD_DATA_DIR=/export/nexctloud
+#alias backup_airsonic='sudo service airsonic stop && tar -cvf "/tmp/airsonic_$(date +%F_%R).tar" /var/airsonic && sudo service airsonic restart'
+#alias backup_nextcloud='sudo docker stop nextcloud && tar -cvf "/tmp/nextcloud_$(date +%F_%R).tar" $NEXCTLOUD_DATA_DIR &&; sudo docker start service nextcloud'
+
+# when files are copied manually to nextcloud folder
+alias nextcloud_force_rescan='docker exec nextcloud sudo -u abc php /config/www/nextcloud/occ files:scan --all'
+
+# delete function without. can be added manually in optional
+# arguments. This removes the risks of deleting files if I/O error
+function funk_rsync() {
+    local server_ip="$1"; shift
+    local folder_to_bckp="$1"; shift
+    local src="/data/$folder_to_bckp"
+    local dest="$1/$folder_to_bckp";shift
+    local extra_rsync_command=("${@:1}")
+    echo "${extra_rsync_command[@]}"
+    mkdir -p $dest
+
+    [ -d $dest ] && rsync -auvh -P  --delete-after --delete-excluded -e "ssh -i ~/.ssh/id_rsa -p 9000 -l root" $server_ip:$src/ $dest/ \
+        --stats --progress --exclude ".*lrprev" --exclude jellyfin/ \
+        --exclude "uploaded_piwigo" --exclude "piwigo" --exclude='*.tmp' \
+        --exclude="*.jpg_original*" \
+        --exclude="docker_photoprism" \
+        --exclude="photoprism" \
+        --exclude=".*" \
+        --exclude="komga/logs/.*" \
+        --exclude="komga/lucene/.*" \
+        --exclude="komga/artemis/.*" \
+        --exclude='.bazarr.log.*' \
+        --exclude='lidarr/logs/*' \
+        --exclude='radarr/logs/*' \
+        --exclude='radarr_fr/logs/.*' \
+        --exclude='MediaCover/*' \
+        --exclude='Navidrome/cache/.*' \
+        --exclude="*.log" --exclude="*.log\..*\.gz" \
+        --exclude="*.page" --exclude="*.amq" \
+        --exclude=.deleted "${extra_rsync_command[@]}" || $dest does not exist
+}
+
+function funk_rsync_config() {
+    # Check if jq is installed
+    if ! command -v jq &>/dev/null; then
+        echo "Error: 'jq' is not installed. Please install it and try again."
+        return 1
+    fi
+
+    # Check if fzf is installed
+    if ! command -v fzf &>/dev/null; then
+        echo "Error: 'fzf' is not installed. Please install it and try again."
+        return 1
+    fi
+    local config_file="$HOME/.funk_rsync_config.json"
+
+    # Check if the configuration file exists
+    if [[ ! -f "$config_file" ]]; then
+        echo "Error: Configuration file '$config_file' not found."
+        return 1
+    fi
+
+    # Parse tasks from JSON and list them using fzf
+    local selected_task=$(jq -r '.tasks[] | "\(.name)"' "$config_file" | fzf --prompt="Select a task: " --height=10 --border --ansi)
+
+    # Exit if no task was selected
+    if [[ -z "$selected_task" ]]; then
+        echo "No task selected. Exiting."
+        return 1
+    fi
+
+    # Extract the selected task's details from the JSON
+    local server_ip=$(jq -r --arg task "$selected_task" '.tasks[] | select(.name == $task) | .server' "$config_file")
+    local folder_to_bckp=$(jq -r --arg task "$selected_task" '.tasks[] | select(.name == $task) | .source' "$config_file")
+    local dest=$(jq -r --arg task "$selected_task" '.tasks[] | select(.name == $task) | .destination' "$config_file")
+    local extra_rsync_options=($(jq -r --arg task "$selected_task" '.tasks[] | select(.name == $task) | .rsync_options[]' "$config_file"))
+
+    # Call funk_rsync with the extracted details and any extra rsync options passed to funk_rsync_config
+    funk_rsync "$server_ip" "$folder_to_bckp" "$dest" "${extra_rsync_options[@]}" "$@"
+}
+
+
+# BFUNK sync to BEEFUNK
+#alias bfunk_bckp_docker="funk_rsync $BFUNK_IP docker /media/$USER/beefunk_data"
+#alias bfunk_bckp_ebooks="funk_rsync $BFUNK_IP ebooks_audiobooks /media/$USER/beefunk_12tb_c --max-delete=100"
+#alias bfunk_bckp_games_1="funk_rsync $BFUNK_IP games /media/$USER/beefunk_data --exclude=Switch/ --exclude=Wii/ --exclude=WiiU/ --exclude=Gamecube/ --max-delete=100"  ## don't backup switch folder
+#alias bfunk_bckp_games_ps4="funk_rsync $BFUNK_IP games/emulation/Playstation/PS4 /media/$USER/beefunk_data/games/emulation/Playstation --max-delete=1"
+#alias bfunk_bckp_games_switch="funk_rsync $BFUNK_IP games/emulation/Nintendo/Switch /media/$USER/beefunk_12tb_b --exclude=JKSV/ --max-delete=100"
+#alias bfunk_bckp_games_wii_u_gc="funk_rsync $BFUNK_IP games/emulation/Nintendo/Gamecube /media/$USER/beefunk_12tb_b --max-delete=100;bfunk_rsync games/emulation/Nintendo/Wii /media/$USER/wii_gc;bfunk_rsync games/emulation/Nintendo/WiiU /media/$USER/wii_gc --max-delete=100;"
+#alias bfunk_bckp_movies="funk_rsync $BFUNK_IP movies /media/$USER/beefunk_12tb_a --exclude='tubesync-downloads' --exclude='UFC*' --filter='P *' --exclude='One Piece*' --exclude='/Sport/' --exclude='Movies(French)' --max-delete=20"                                                                                                                                                                                                                                                                    
+#alias bfunk_bckp_movies_french="funk_rsync $BFUNK_IP Movies\(French\) /media/lbesnard/beefunk_12tb_a/movies --max-delete=20"                                                                                                                                                                                                                                                                                                                                                                              
+#alias bfunk_bckp_movies_sport="funk_rsync $BFUNK_IP Sport /media/lbesnard/beefunk_12tb_a/movies --max-delete=10"
+#alias bfunk_bckp_music="funk_rsync $BFUNK_IP music /media/$USER/beefunk_12tb_c --max-delete=1000"
+#alias bfunk_bckp_music_no_beet="funk_rsync $BFUNK_IP music /media/$USER/beefunk_12tb_c --exclude='*.blb' --max-delete=1000"
+#alias bfunk_bckp_navidrome="docker stop navidrome; funk_rsync $BFUNK_IP docker/navidrome /opt/docker_config; cd ~/dotfiles/beefunk/docker-compose; docker-compose up -d navidrome"
+#alias bfunk_bckp_nextcloud="funk_rsync $BFUNK_IP nextcloud /media/$USER/beefunk_12tb_c/ --exclude=backups/nextcloud-\*"
+#alias bfunk_bckp_pictures="funk_rsync $BFUNK_IP pictures /media/$USER/beefunk_12tb_c --max-delete=1000"
+#alias bfunk_bckp_pictures_piwigo="funk_rsync $BFUNK_IP pictures_piwigo /opt/docker_config/piwigo/piwigo/gallery/upload --max-delete=1000"
+#alias bfunk_bckp_self_improvement="funk_rsync $BFUNK_IP self_improvement /media/$USER/beefunk_12tb_c --max-delete=1000"
+#alias bfunk_bckp_shows="funk_rsync $BFUNK_IP TV\ Shows /media/lbesnard/beefunk_data/movies  --exclude='tubesync-downloads' --exclude='UFC*' --filter='P *' --exclude='One Piece*' --max-delete=20"
+
+## bfunk sync to external hdd
+#alias bfunk_bckp_ebooks_simpl_12tb_1="funk_rsync $BFUNK_IP ebooks_audiobooks /media/$USER/simpl_12tb_1 --max-delete=100"
+#alias bfunk_bckp_nextcloud_simpl_12tb_1="funk_rsync $BFUNK_IP nextcloud /media/$USER/simpl_12tb_1 --exclude=backups/nextcloud-\*"
+#alias bfunk_bckp_self_improvement_simpl_12tb_1="funk_rsync $BFUNK_IP self_improvement /media/$USER/simpl_12tb_1 --max-delete=1000"
+#alias bfunk_bckp_pictures_simpl_12tb_1="funk_rsync $BFUNK_IP pictures /media/$USER/simpl_12tb_1 --max-delete=1000"
+
+
+#alias bfunk2efunk_bckp_games_switch="funk_rsync $BFUNK_IP games/emulation/Nintendo/Switch /media/dfunk_5tb_1 --exclude=backup\* --exclude=SCUMMVM\* --exclude=WRC\* --exclude=JKSV/ --max-delete=100"
+#alias bfunk2efunk_bckp_movies_french="funk_rsync $BFUNK_IP Movies\(French\) /media/efunk_4tb_1/movies --max-delete=20"
+
+## BEEFUNK sync to BROWNFUNK
+#alias beefunk_bckp_docker_komga="funk_rsync $BEEFUNK_TAILSCALE_IP docker/komga $DOCKER_CONFIG_DIR"
+#alias beefunk_bckp_docker_navidrome="funk_rsync $BEEFUNK_TAILSCALE_IP docker/navidrome $DOCKER_CONFIG_DIR"
+#alias beefunk_bckp_docker_jellyfin="funk_rsync $BEEFUNK_TAILSCALE_IP docker/jellyfin $DOCKER_CONFIG_DIR"
+
+alias bfunk_nextcloud_preview_generation="docker exec -it nextcloud occ preview:generate-all --path="lbesnard/files/Photos" -vvv"
+
+#$BEEFUNK_LOCAL_IP BEEFUNK sync to BFUNK
+#alias beefunk_bckp_pictures_dry_run="rsync -auv -P --delete-after --max-delete=1000 --delete-excluded -e \"ssh -i ~/.ssh/id_rsa -p 9000 -l root\" $BEEFUNK_TAILSCALE_IP:/data/pictures/ $BFUNK_PICTURES_PATH --stats --progress --dry-run"
+#alias beefunk_bckp_pictures="rsync -auv -P --delete-after --max-delete=1000 --delete-excluded -e \"ssh -i ~/.ssh/id_rsa -p 9000 -l root\" $BEEFUNK_TAILSCALE_IP:/data/pictures/ $BFUNK_PICTURES_PATH --stats --progress"
+
+##EFUNK rsync to BEEFUNK
+#alias efunk_bckp_nextcloud="funk_rsync $EFUNK_TAILSCALE_IP nextcloud /media/$USER/beefunk_12tb_b/efunk_backup  --exclude=backups/nextcloud-\*- --max-delete=300"
+#alias efunk_bckp_immich="funk_rsync $EFUNK_TAILSCALE_IP immich /media/$USER/beefunk_12tb_b/efunk_backup --max-delete=100"
+#alias efunk_bckp_pictures="funk_rsync $EFUNK_TAILSCALE_IP pictures /media/$USER/beefunk_12tb_b/efunk_backup --max-delete=100"
+#alias efunk_bckp_ps4="funk_rsync $EFUNK_TAILSCALE_IP torrent_ps4 /media/$USER/beefunk_data/ps4 --max-delete=100"
+
+alias efunk_nextcloud_preview_gen="docker exec -it nextcloud occ preview:generate-all -vvv"
+
+# BEEFUNK sync to BROWNFUNK
+#alias beefunk_bckp_navidrome="docker stop navidrome; funk_rsync $BEEFUNK_TAILSCALE_IP docker/navidrome /opt/docker_config; cd ~/dotfiles/beefunk/docker-compose; docker-compose up -d navidrome"
+#alias beefunk_bckp_navidrome="funk_rsync $BEEFUNK_TAILSCALE_IP navidrome $DOCKER_CONFIG_DIR;"
+
+# crowdsec
+alias cscli="docker exec -t crowdsec cscli"
+alias cscli_decisions_list="cscli decisions list"
+alias cscli_alerts_list="cscli alerts list"
+alias cscli_metrics="cscli metrics"
+alias cscli_bouncer_list="cscli bouncers list"
+
+# BROWNFUNK load beets with miniforge
+alias beet="[ -f ~/miniforge3/envs/beets/bin/python ] && conda activate beets;beet"
+
+
+
+dask_tunnel() {
+ if [ "$#" -ne 3 ]; then
+ echo "Usage: dask_tunnel <target_host> <ssh_host> <token>"
+ return 1
+ fi
+
+ target_host="$1"
+ ssh_host="$2"
+ token="$3"
+
+
+ full_url="https://localhost:8080/status?token=$token"
+
+ echo "Connecting to Dask cluster at: $full_url"
+
+ /usr/bin/ssh -L 8080:"$target_host":443 "$ssh_host" -N &
+
+ ssh_pid=$!
+
+ sleep 2
+
+ echo "Please open the following URL in your browser: $full_url"
+
+ echo "SSH tunnel established with PID: $ssh_pid"
+}

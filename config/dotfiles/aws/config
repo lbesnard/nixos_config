@@ -1,0 +1,80 @@
+#[default]
+#region = ap-southeast-2
+#sso_session = login
+
+# login pseudo-profile
+[sso-session login]
+sso_start_url = https://d-976763a7b2.awsapps.com/start#
+sso_region = ap-southeast-2
+sso_registration_scopes = sso:account:access
+
+# account profiles
+[profile nonproduction-projectofficer]
+sso_session = login
+sso_region = ap-southeast-2
+sso_account_id = 615645230945
+sso_role_name = AodnProjectOfficerAccess
+region = ap-southeast-2
+
+[profile nonproduction-admin]
+sso_session = login
+sso_region = ap-southeast-2
+sso_account_id = 615645230945
+sso_role_name = AodnAdminAccess
+region = ap-southeast-2
+
+[profile prodapp-projectofficer]
+sso_session = login
+sso_region = ap-southeast-2
+sso_account_id = 907401791867
+sso_role_name = AodnProjectOfficerAccess
+region = ap-southeast-2
+
+[profile admin-projectofficer]
+sso_session = login
+sso_region = ap-southeast-2
+sso_account_id = 104044260116
+sso_role_name = AodnProjectOfficerAccess
+region = ap-southeast-2
+
+[profile systestapp-projectofficer]
+sso_session = login
+sso_region = ap-southeast-2
+sso_account_id = 392839405989
+sso_role_name = AodnProjectOfficerAccess
+region = ap-southeast-2
+
+[profile edge-projectofficer]
+sso_session = login
+sso_region = ap-southeast-2
+sso_account_id = 704910415367
+sso_role_name = AodnProjectOfficerAccess
+region = ap-southeast-2
+
+[profile edge-admin]
+sso_session = login
+sso_region = ap-southeast-2
+sso_account_id = 704910415367
+sso_role_name = AodnAdminAccess
+region = ap-southeast-2
+
+[profile staging-projectofficer]
+sso_session = login
+sso_region = ap-southeast-2
+sso_account_id = 905418367757
+sso_role_name = AodnProjectOfficerAccess
+region = ap-southeast-2
+
+[profile production-projectofficer]
+sso_session = login
+sso_region = ap-southeast-2
+sso_account_id = 211125304466
+sso_role_name = AodnProjectOfficerAccess
+region = ap-southeast-2
+
+[profile central-projectofficer]
+sso_session = login
+sso_region = ap-southeast-2
+sso_account_id = 851725428481
+sso_role_name = AodnProjectOfficerAccess
+region = ap-southeast-2

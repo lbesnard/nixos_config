@@ -1,0 +1,16 @@
+source ~/.alias
+
+if command -v fzf > /dev/null; then
+  if [ -n "$ZSH_VERSION" ]; then
+    eval "$(fzf --zsh)"
+  elif [ -n "$BASH_VERSION" ]; then
+    eval "$(fzf --bash)"
+  fi
+fi
+
+
+function init_nix_conda() {
+# https://wiki.nixos.org/wiki/Python#Using_micromamba
+nix-shell -E 'with import <nixpkgs> {}; (pkgs.buildFHSEnv { name = "fhs"; }).env'
+eval "$(micromamba shell hook -s bash)"
+}
