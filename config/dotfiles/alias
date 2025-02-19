@@ -293,6 +293,10 @@ else
     alias myip="curl ifconfig.me"
 fi
 
+if command -v nmcli > /dev/null; then
+  alias mydns=( nmcli dev list || nmcli dev show ) 2>/dev/null | grep DNS
+fi
+
 # vpn
 alias s='var=$(grep -e "^Host " ~/.ssh/config | sed "s#Host ##" | fzf) && ssh $var' # ssh with fzf to list known hosts from ssh/config
 [ -f ~/.utas_vpnc.conf ] && alias vpn_utas_connect='sudo vpnc ~/.utas_vpnc.conf --local-port 0' && alias vpn_utas_disconnect='sudo vpnc-disconnect'
