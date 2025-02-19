@@ -1,12 +1,21 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, ... }:
+{
   programs.ssh.enable = true;
 
   # Structured SSH Host Entries
   programs.ssh.matchBlocks = {
-    "bastion-prod" = { hostname = "bastion.aodn.org.au"; };
-    "bastion-prodapp" = { hostname = "bastion.prod.aodn.org.au"; };
-    "bastion-sysapp" = { hostname = "bastion.systest.aodn.org.au"; };
-    "bastion-dev" = { hostname = "bastion.dev.aodn.org.au"; };
+    "bastion-prod" = {
+      hostname = "bastion.aodn.org.au";
+    };
+    "bastion-prodapp" = {
+      hostname = "bastion.prod.aodn.org.au";
+    };
+    "bastion-sysapp" = {
+      hostname = "bastion.systest.aodn.org.au";
+    };
+    "bastion-dev" = {
+      hostname = "bastion.dev.aodn.org.au";
+    };
 
     "nectar_rdsi" = {
       hostname = "131.217.175.208";
@@ -170,4 +179,3 @@
       IdentityFile ${config.home.homeDirectory}/.ssh/id_rsa.pub
   '';
 }
-

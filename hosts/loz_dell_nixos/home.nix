@@ -58,15 +58,15 @@ in
     fill_shape=false
   '';
 
-   programs.awscli = {
-      enable = true;
-      # credentials =  {
-      #   "default" = {
-      #     # "aws_access_key_id" = config.age.secrets.aws_cred.path;  # not working...
-      #     "aws_access_key_id" = "this is a test";  # working
-      #   };
-      # };
-   };
+  programs.awscli = {
+    enable = true;
+    # credentials =  {
+    #   "default" = {
+    #     # "aws_access_key_id" = config.age.secrets.aws_cred.path;  # not working...
+    #     "aws_access_key_id" = "this is a test";  # working
+    #   };
+    # };
+  };
 
   # Install & Configure Git
   programs.git = {
@@ -112,7 +112,6 @@ in
     platformTheme.name = "gtk3";
   };
 
-
   # Scripts
   home.packages = [
     (import ../../scripts/emopicker9000.nix { inherit pkgs; })
@@ -140,7 +139,7 @@ in
           after_sleep_cmd = "hyprctl dispatch dpms on";
           ignore_dbus_inhibit = false;
           lock_cmd = "hyprlock";
-          };
+        };
         listener = [
           {
             timeout = 900;
@@ -181,10 +180,10 @@ in
         inactive_tab_font_style bold
       '';
     };
-     starship = {
-            enable = true;
-            package = pkgs.starship;
-     };
+    starship = {
+      enable = true;
+      package = pkgs.starship;
+    };
     bash = {
       enable = true;
       enableCompletion = true;
@@ -243,21 +242,21 @@ in
             valign = "center";
           }
         ];
-      #   lib.mkPrio.input-field = [
-      #     {
-      #       size = "200, 50";
-      #       position = "0, -80";
-      #       monitor = "";
-      #       dots_center = true;
-      #       fade_on_empty = false;
-      #       font_color = "rgb(CFE6F4)";
-      #       inner_color = "rgb(657DC2)";
-      #       outer_color = "rgb(0D0E15)";
-      #       outline_thickness = 5;
-      #       placeholder_text = "Password...";
-      #       shadow_passes = 2;
-      #     }
-      #   ];
+        #   lib.mkPrio.input-field = [
+        #     {
+        #       size = "200, 50";
+        #       position = "0, -80";
+        #       monitor = "";
+        #       dots_center = true;
+        #       fade_on_empty = false;
+        #       font_color = "rgb(CFE6F4)";
+        #       inner_color = "rgb(657DC2)";
+        #       outer_color = "rgb(0D0E15)";
+        #       outline_thickness = 5;
+        #       placeholder_text = "Password...";
+        #       shadow_passes = 2;
+        #     }
+        #   ];
       };
     };
 

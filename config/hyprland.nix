@@ -64,7 +64,7 @@ with lib;
             kb_options = caps:super
             follow_mouse = 1
             touchpad {
-              natural_scroll = true
+              natural_scroll = false
               disable_while_typing = true
               scroll_factor = 0.8
             }
@@ -139,6 +139,7 @@ with lib;
           }
           bind = ${modifier},Return,exec,${terminal}
           bind = ${modifier}SHIFT,L,exec,hyprlock
+          bind = ${modifier}SHIFT,R,exec, ~/.config/hypr/toggle_keyboard_layout.sh
           bind = ${modifier}SHIFT,Return,exec,rofi-launcher
           bind = ${modifier}SHIFT,W,exec,web-search
           bind = ${modifier}ALT,W,exec,wallsetter

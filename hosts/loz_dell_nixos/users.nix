@@ -6,9 +6,10 @@
 
 let
   inherit (import ./variables.nix) gitUsername;
-  joplin = pkgs.callPackage ./joplin.nix {};  # Call the package here
+  joplin = pkgs.callPackage ./joplin.nix { }; # Call the package here
 in
 {
+
   users.users = {
     "${username}" = {
       homeMode = "755";
@@ -29,7 +30,16 @@ in
       packages = with pkgs; [
         # Development & Programming
         gcc
+        gem
+        cargo
+        ruby
+        gnumake
+        tree-sitter
+        ghostscript
         neovim
+        luajitPackages.luarocks
+        chafa
+
         micromamba
         poetry
         nodejs
@@ -80,6 +90,10 @@ in
         dnsutils
         wireshark
         termshark
+        ifwifi # nmcli
+        iw
+        netscanner
+        tcpdump
         croc
         iperf3
         awscli2
@@ -102,6 +116,7 @@ in
         viu
         yazi
         ueberzug
+        ueberzugpp
         ncdu
 
         # Multimedia & Graphics
@@ -147,16 +162,16 @@ in
         slack
         zoom-us
         whatsapp-for-linux
-        joplin  # manually built
+        joplin # manually built
         # logseq  ## issue with non free package
         appflowy
         nextcloud-client
         firefox
         # element-desktop # replaced by element installed via brave
-        
+
         anki-bin # flashcards
 
-        # NetCDF 
+        # NetCDF
         netcdf
         nco
         netcdfcxx4
@@ -164,6 +179,7 @@ in
 
         # database
         pgcli
+        sqlite
         mycli
       ];
     };

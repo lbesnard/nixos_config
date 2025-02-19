@@ -8,6 +8,8 @@ if command -v fzf > /dev/null; then
   fi
 fi
 
+# press esc twice to append sudo to any command
+bind '"\e\e": "\C-a sudo "'
 
 function init_nix_conda() {
 # https://wiki.nixos.org/wiki/Python#Using_micromamba

@@ -24,7 +24,6 @@ in
     ../../modules/local-hardware-clock.nix
   ];
 
-
   boot = {
     # kernelPackages = pkgs.linuxPackages_latest.extend (self: super: {
     # ipu6-drivers = super.ipu6-drivers.overrideAttrs (final: previous: rec {
@@ -40,18 +39,22 @@ in
     # });
     # # Kernel
     # kernelPackages = pkgs.linuxPackages_zen;
-    kernelPackages = pkgs.linuxPackages_zen.extend (self: super: {
-      ipu6-drivers = super.ipu6-drivers.overrideAttrs (final: previous: rec {
-        src = builtins.fetchGit {
-          url = "https://github.com/intel/ipu6-drivers.git";
-          ref = "master";
-          rev = "b4ba63df5922150ec14ef7f202b3589896e0301a";
-        };
-        patches = [
-          "${src}/patches/0001-v6.10-IPU6-headers-used-by-PSYS.patch"
-        ];
-      });
-    });
+    kernelPackages = pkgs.linuxPackages_zen.extend (
+      self: super: {
+        ipu6-drivers = super.ipu6-drivers.overrideAttrs (
+          final: previous: rec {
+            src = builtins.fetchGit {
+              url = "https://github.com/intel/ipu6-drivers.git";
+              ref = "master";
+              rev = "b4ba63df5922150ec14ef7f202b3589896e0301a";
+            };
+            patches = [
+              "${src}/patches/0001-v6.10-IPU6-headers-used-by-PSYS.patch"
+            ];
+          }
+        );
+      }
+    );
     # This is for OBS Virtual Cam Support
     kernelModules = [ "v4l2loopback" ];
     extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
@@ -143,14 +146,26 @@ in
   # Enable networking
   networking.networkmanager.enable = true;
   networking.hostName = host;
-  networking.nameservers = [ "1.1.1.1" "9.9.9.9" ]; # cloudflare
+  networking.nameservers = [
+    "1.1.1.1"
+    "9.9.9.9"
+  ]; # cloudflare
   networking.timeServers = options.networking.timeServers.default ++ [ "pool.ntp.org" ];
 
   networking.hosts = {
-  "100.92.18.39" = ["brownfunk.home" "brownfunk.lan"];
-  "100.107.210.10" = ["beefunk.home" "beefunk.lan"];
-  "100.65.194.124" = ["evryfunk.home" "evryfunk.lan"];
-};
+    "100.92.18.39" = [
+      "brownfunk.home"
+      "brownfunk.lan"
+    ];
+    "100.107.210.10" = [
+      "beefunk.home"
+      "beefunk.lan"
+    ];
+    "100.65.194.124" = [
+      "evryfunk.home"
+      "evryfunk.lan"
+    ];
+  };
 
   # Set your time zone.
   time.timeZone = "Australia/Hobart";
@@ -294,7 +309,7 @@ in
     ydotool
     duf
     ncdu
-    plasma5Packages.plasma-thunderbolt  # https://nixos.wiki/wiki/Thunderbolt
+    plasma5Packages.plasma-thunderbolt # https://nixos.wiki/wiki/Thunderbolt
     wl-clipboard
     pciutils
     ffmpeg
@@ -343,7 +358,6 @@ in
       material-icons
     ];
   };
-
 
   environment.variables = {
     ZANEYOS_VERSION = "2.3";
@@ -437,14 +451,13 @@ in
   };
 
   # for keepmenu
-  systemd.packages = [pkgs.ydotool ];
-  systemd.user.services.ydotool.wantedBy = ["default.target"];
+  systemd.packages = [ pkgs.ydotool ];
+  systemd.user.services.ydotool.wantedBy = [ "default.target" ];
   programs.ydotool.enable = true; # add ydotool to group to user
 
-
-  # AWS 
+  # AWS
   age.identityPaths = [ "/home/${username}/.ssh/id_rsa" ];
-  age.secrets.aws_cred = { 
+  age.secrets.aws_cred = {
     file = ../../secrets/aws_cred.age;
     path = "/home/${username}/.aws/credentials";
     owner = "${username}";
@@ -454,9 +467,9 @@ in
   };
 
   # tailscale
-  age.secrets.tailscale_token = { 
-      file = ../../secrets/tailscale_token.age;
-      };
+  # age.secrets.tailscale_token = {
+  #     file = ../../secrets/tailscale_token.age;
+  #     };
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
@@ -508,7 +521,7 @@ in
 
   # missing from default zaneyos config
   # https://0xda.de/blog/2024/07/framework-and-nixos-locking-customization/
-   security.pam.services.hyprlock = {};
+  security.pam.services.hyprlock = { };
 
   # Optimization settings and garbage collection automation
   nix = {
@@ -552,4 +565,5 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
+
 }

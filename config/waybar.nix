@@ -28,6 +28,7 @@ with lib;
           "cpu"
           "memory"
           "idle_inhibitor"
+          "hyprland/language"
         ];
         modules-right = [
           "custom/hyprbindings"
@@ -68,6 +69,14 @@ with lib;
             "" = " 🙈 No Windows? ";
           };
         };
+        "hyprland/language" = {
+          interval = 1;
+          format = "{}";
+          format-en = "au";
+          format-fr = "fr";
+          format-no = "no";
+          keyboard-name = "at-translated-set-2-keyboard";
+        };
         "memory" = {
           interval = 5;
           format = " {}%";
@@ -83,6 +92,8 @@ with lib;
           tooltip = true;
         };
         "network" = {
+          interval = 1;
+          format-alt = "{ifname}: {ipaddr}/{cidr}";
           format-icons = [
             "󰤯"
             "󰤟"
@@ -244,7 +255,7 @@ with lib;
         tooltip label {
           color: #${config.lib.stylix.colors.base08};
         }
-        #window, #pulseaudio, #cpu, #memory, #idle_inhibitor {
+        #window, #pulseaudio, #cpu, #memory, #idle_inhibitor, #language {
           font-weight: bold;
           margin: 4px 0px;
           margin-left: 7px;

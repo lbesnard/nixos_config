@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: let
+{ config, pkgs, ... }:
+let
   keepmenuPath = ./keepmenu/config.ini;
 in
 {

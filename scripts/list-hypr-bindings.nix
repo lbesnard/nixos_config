@@ -19,6 +19,7 @@ pkgs.writeShellScriptBin "list-hypr-bindings" ''
   " + ENTER" "Terminal" "${terminal}" \
   " + SHIFT + L" "Screen lock" "hyprlock" \
   " + SHIFT + ENTER" "App Launcher" "rofi" \
+  " + SHIFT + R" "Change Keyboard layout (aus,fr,no)" "toggle_keyboard_layout" \
   " + ALT + W" "Change Wallpaper" "wallsetter" \
   " + Q" "Kill Focused Window" "killactive" \
   " + SHIFT + W" "Search Websites Like Nix Packages" "web-search" \
