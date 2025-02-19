@@ -31,6 +31,7 @@ in
         # Development & Programming
         gcc
         gem
+        lua
         cargo
         ruby
         gnumake
