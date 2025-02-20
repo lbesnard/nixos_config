@@ -294,7 +294,7 @@ else
 fi
 
 if command -v nmcli > /dev/null; then
-  alias mydns=( nmcli dev list || nmcli dev show ) 2>/dev/null | grep DNS
+  alias mydns="( nmcli dev list || nmcli dev show ) 2>/dev/null | grep DNS"
 fi
 
 # vpn

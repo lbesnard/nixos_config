@@ -6,7 +6,7 @@ let
 
 in
 {
-  xdg.configFile."gh".source = ghPath;
+  # xdg.configFile."gh".source = ghPath;
 
   home.file = {
     ".gitconfig" = {

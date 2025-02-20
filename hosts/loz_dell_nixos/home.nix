@@ -58,23 +58,6 @@ in
     fill_shape=false
   '';
 
-  programs.awscli = {
-    enable = true;
-    # credentials =  {
-    #   "default" = {
-    #     # "aws_access_key_id" = config.age.secrets.aws_cred.path;  # not working...
-    #     "aws_access_key_id" = "this is a test";  # working
-    #   };
-    # };
-  };
-
-  # Install & Configure Git
-  programs.git = {
-    enable = true;
-    userName = "${gitUsername}";
-    userEmail = "${gitEmail}";
-  };
-
   # Create XDG Dirs
   xdg = {
     userDirs = {
@@ -155,8 +138,117 @@ in
     };
   };
 
+  programs.awscli = {
+    enable = true;
+    # credentials =  {
+    #   "default" = {
+    #     # "aws_access_key_id" = config.age.secrets.aws_cred.path;  # not working...
+    #     "aws_access_key_id" = "this is a test";  # working
+    #   };
+    # };
+  };
+
+  # Install & Configure Git
+  programs.git = {
+    enable = true;
+    userName = "${gitUsername}";
+    userEmail = "${gitEmail}";
+  };
+
+  programs.gh = {
+    enable = true;
+    gitCredentialHelper.enable = true;
+    settings = {
+      git_protocol = "ssh";
+      github.com = {
+        git_protocol = "ssh";
+        users."${gitUsername}" = { };
+        user = "${gitUsername}";
+      };
+      editor = "";
+      prompt = "enabled";
+      pager = "bat --style plain";
+      aliases = {
+        co = ''!id="$(gh pr list -L100 | fzf --no-preview --reverse | cut -f1)"; [ -n "$id" ] && gh pr checkout "$id"'';
+        _issue_user_repo_view = ''
+          !(
+                  tmp_getops=`getopt -o a:r:m:c,s: --long assignee:,repo:,milestone:,comment,state: -- "$@"`
+                  eval set -- "$tmp_getops"
+
+                  while true ; do
+                      case "$1" in
+                          -a|--assignee) user="-a $2"; shift 2;;
+                          -r|--repo) repo="$2"; shift 2;;
+                          -m|--milestone) milestone="$2"; shift 2;;
+                          -c|--comment) comment=true; shift 1;;
+                          -s|--state) state="-s $2"; shift 2;;
+                          --) shift; break;;
+                          *) ;;
+                      esac
+                  done
+
+                  [ -z "$comment" ] && command=view || command=comment
+
+                  [ ! -z "$milestone" ] && (echo "$milestone" | grep -q -i top) && milestone="Top of PO Backlog"
+
+                  if [ -z "$milestone" ]
+                  then
+                      id="$(gh issue list -L100 $state $user -R $repo | fzf --preview '(gh issue -R '$repo' view $(echo {} | awk '{print $1;}') | mdcat)' --reverse --multi=1 | cut -f1)"
+                  else
+                      re_number="^[0-9]+$"
+                      echo "$milestone" | grep -q -E "$re_number"  && \
+                          id="$(gh issue list -L100 $user -R $repo $state --search "milestone:\"Iteration $milestone\"" | fzf --preview '(gh issue -R '$repo' view $(echo {} | awk '{print $1;}') | mdcat)' --reverse --multi=1 | cut -f1)" || \
+                          id="$(gh issue list -L100 $user -R $repo $state --search "milestone:\"$milestone\"" | fzf --preview '(gh issue -R '$repo' view $(echo {} | awk '{print $1;}') | mdcat)' --reverse --multi=1 | cut -f1)"
+                  fi
+
+                  [ -n "$id" ] && gh issue -R $repo $command "$id"
+                )'';
+        issues = ''
+          !(
+                  case $1 in
+                    content|issues|backlog|po-backlog|data-services|python-aodntools|python-aodncore|python-aodndata)
+                      organisation=aodn
+                      repo="$organisation/$1";
+
+                      tmp_getops=`getopt -o c,a,m: --long comment,all,milestone:,closed -- "$@"`
+                      eval set -- "$tmp_getops"
+
+                      while true ; do
+                          case "$1" in
+                              -c|--comment) comment="$1"; shift 1;;
+                              -a|--all) all_users=True; shift 1;;
+                              -m|--milestone) milestone="-m $2"; shift 2;;
+                              --closed) state="-s closed"; shift 1;;
+                              --) shift; break;;
+                              *) ;;
+                          esac
+                      done
+
+                      if [ -z "$all_users" ]
+                      then
+                          user="$GIT_USER"
+                          gh _issue_user_repo_view -a $user -r $repo $comment $milestone $state
+                      else
+                          gh _issue_user_repo_view -r $repo $comment $milestone $state
+                      fi
+                      ;;
+
+                    *)
+                      echo "The following commands are supported from 'gh issues':"
+                      echo "\tcontent, po-backlog, data-services... \t list all issues for user from content repo"
+                      echo "\t-m [223, Iteration 223, top] \t list all issues for specific milestone"
+                      echo "\t-a --all \t list all issues for all users"
+                      echo "\t--closed \t list closed issues"
+                      ;;
+                  esac
+                )'';
+      };
+    };
+  };
+
   programs = {
-    gh.enable = true;
+    gh-dash.enable = true;
+    ghostty.enable = true;
     btop = {
       enable = true;
       settings = {

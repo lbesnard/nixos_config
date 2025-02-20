@@ -61,6 +61,7 @@ in
         # github
         git
         gh
+        gh-dash
         lazygit
         zsh-forgit
 
@@ -152,6 +153,7 @@ in
 
         # Desktop & Window Management
         alacritty
+        ghostty
         wofi
         dmenu
         xdotool
