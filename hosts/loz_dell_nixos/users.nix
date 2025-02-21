@@ -120,9 +120,19 @@ in
         ueberzug
         ueberzugpp
         ncdu
+        gnome-disk-utility
 
         # Multimedia & Graphics
         ffmpeg
+        vlc
+        digikam
+        shotcut
+        audacity
+        inkscape-with-extensions
+        kazam
+        obs-studio
+
+        conjure
         cheese
         imagemagick
         krita
@@ -140,6 +150,7 @@ in
         calibre
 
         # Security & Password Management
+        authenticator
         keepassxc
         pinentry
         ydotool

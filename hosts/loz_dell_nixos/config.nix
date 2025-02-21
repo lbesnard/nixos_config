@@ -329,6 +329,7 @@ in
     networkmanagerapplet
     yad
     inxi
+    obs-studio
     playerctl
     nh
     nixfmt-rfc-style

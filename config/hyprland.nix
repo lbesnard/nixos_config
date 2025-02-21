@@ -141,6 +141,7 @@ with lib;
           bind = ${modifier}SHIFT,L,exec,hyprlock
           bind = ${modifier}SHIFT,R,exec, ~/.config/hypr/toggle_keyboard_layout.sh
           bind = ${modifier}SHIFT,Return,exec,rofi-launcher
+          bind = ${modifier}SHIFT,M,exec,kitty --start-as fullscreen -e cmatrix
           bind = ${modifier}SHIFT,W,exec,web-search
           bind = ${modifier}ALT,W,exec,wallsetter
           bind = ${modifier}SHIFT,N,exec,swaync-client -rs

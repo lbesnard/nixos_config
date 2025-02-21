@@ -247,7 +247,9 @@ in
   };
 
   programs = {
-    gh-dash.enable = true;
+    gh-dash = {
+      enable = true;
+    };
     ghostty.enable = true;
     btop = {
       enable = true;
