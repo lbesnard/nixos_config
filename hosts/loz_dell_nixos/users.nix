@@ -137,6 +137,8 @@ in
         imagemagick
         krita
         darktable
+        hugin # panorama
+        digikam
         evince
         handbrake
         yt-dlp

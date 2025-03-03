@@ -47,6 +47,15 @@ if [ -x "$path_to_lsd" ] ; then
     alias lt='ls --tree'
 fi
 
+
+if command -v zoxide > /dev/null; then
+  alias z=zoxide
+fi
+
+if command -v yazi > /dev/null; then
+  alias y=yazi
+fi
+
 ##########################
 # CHEF cooking + Ansible provisionning
 ##########################
@@ -663,7 +672,7 @@ function funk_rsync_config() {
     local extra_rsync_options=($(jq -r --arg task "$selected_task" '.tasks[] | select(.name == $task) | .rsync_options[]' "$config_file"))
 
     # Call funk_rsync with the extracted details and any extra rsync options passed to funk_rsync_config
-    funk_rsync "$server_ip" "$folder_to_bckp" "$dest" "${extra_rsync_options[@]}" "$@"
+    eval funk_rsync "$server_ip" "$folder_to_bckp" "$dest" "${extra_rsync_options[@]}" "$@"
 }
 
 
@@ -729,30 +738,43 @@ alias cscli_bouncer_list="cscli bouncers list"
 # BROWNFUNK load beets with miniforge
 alias beet="[ -f ~/miniforge3/envs/beets/bin/python ] && conda activate beets;beet"
 
-
+mount_beefunk_pics() {
+  if [[ -d ~/beefunk_pictures/ ]]; then
+    sshfs lbesnard@beefunk.lan:/media/lbesnard/beefunk_12tb_c/pictures beefunk_pictures
+  else
+    mkdir -p ~/beefunk_pictures/ &&    sshfs lbesnard@beefunk.lan:/media/lbesnard/beefunk_12tb_c/pictures beefunk_pictures
+  fi
+}
 
 dask_tunnel() {
- if [ "$#" -ne 3 ]; then
- echo "Usage: dask_tunnel <target_host> <ssh_host> <token>"
- return 1
- fi
+  if [ "$#" -ne 3 ]; then
+  echo "Usage: dask_tunnel <target_host> <ssh_host> <token>"
+  return 1
+  fi
 
- target_host="$1"
- ssh_host="$2"
- token="$3"
+  target_host="$1"
+  ssh_host="$2"
+  token="$3"
 
 
- full_url="https://localhost:8080/status?token=$token"
+  full_url="https://localhost:8080/status?token=$token"
 
- echo "Connecting to Dask cluster at: $full_url"
+  echo "Connecting to Dask cluster at: $full_url"
+  unset -f ssh
 
- /usr/bin/ssh -L 8080:"$target_host":443 "$ssh_host" -N &
+  ssh -L 8080:"$target_host":443 "$ssh_host" -N &
 
- ssh_pid=$!
+  ssh_pid=$!
 
- sleep 2
+  sleep 2
 
- echo "Please open the following URL in your browser: $full_url"
+  echo "Please open the following URL in your browser: $full_url"
 
- echo "SSH tunnel established with PID: $ssh_pid"
+  echo "SSH tunnel established with PID: $ssh_pid"
+}
+
+# tunnel jupyter notebook from 8888 to 8080 localhost
+jupyter_tunnel(){
+  unset -f ssh 
+  ssh -L 8080:localhost:8888 laptop_work -N &
 }

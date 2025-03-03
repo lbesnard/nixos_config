@@ -263,6 +263,7 @@ in
       settings = {
         font_size = 10;
         scrollback_lines = 6000;
+        enable_audio_bell = false;
         wheel_scroll_min_lines = 1;
         window_padding_width = 4;
         confirm_os_window_close = 0;
