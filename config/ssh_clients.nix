@@ -60,6 +60,13 @@
       forwardX11 = true;
     };
 
+    "efunknuc" = {
+      hostname = "100.126.163.130";
+      port = 22;
+      forwardAgent = true;
+      forwardX11 = true;
+    };
+
     "ec2_cloudopt" = {
       hostname = "13.55.255.109";
       user = "ubuntu";
@@ -81,6 +88,7 @@
     Host *
       VisualHostKey no
       AddKeysToAgent yes  
+      # use to be able to use kitty
 
     # Bastion Hosts
     Host bastion-*

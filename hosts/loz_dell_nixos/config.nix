@@ -169,6 +169,10 @@ in
       "evryfunk.home"
       "evryfunk.lan"
     ];
+    "100.126.163.130" = [
+      "evrynucfunk.home"
+      "evrynucfunk.lan"
+    ];
   };
 
   # Set your time zone.
@@ -289,6 +293,18 @@ in
 
   users = {
     mutableUsers = true;
+  };
+
+  # use for sshfs defined in hhardware.nix, using hosts ssh key (public key to be added in authorized_keys of remote machine!)
+  programs.ssh.knownHosts = {
+    brownfunk = {
+      extraHostNames = [
+        "brownfunk.lan"
+        "brownfunk.home"
+        "100.92.18.39"
+      ];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJeCimucwc0L/F1N3cvKZCJ63KsAql+VXqGsvMXI8jCe";
+    };
   };
 
   environment.systemPackages = with pkgs; [
@@ -461,7 +477,8 @@ in
   programs.ydotool.enable = true; # add ydotool to group to user
 
   # AWS
-  age.identityPaths = [ "/home/${username}/.ssh/id_rsa" ];
+  # age.identityPaths = [ "/home/${username}/.ssh/id_rsa" ];
+  age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   age.secrets.aws_cred = {
     file = ../../secrets/aws_cred.age;
     path = "/home/${username}/.aws/credentials";
@@ -498,6 +515,23 @@ in
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
+
+  services.cockpit = {
+    enable = true;
+    port = 9090;
+    openFirewall = true; # Please see the comments section
+    settings = {
+      WebService = {
+        AllowUnencrypted = true;
+      };
+    };
+  };
+
+  systemd.sockets."cockpit" = {
+    socketConfig = {
+      ListenStream = 9090;
+    };
+  };
 
   # Security / Polkit
   security.rtkit.enable = true;
@@ -562,6 +596,20 @@ in
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
+  # ...
+  networking.firewall = {
+    # enable the firewall
+    enable = true;
+
+    # always allow traffic from your Tailscale network
+    trustedInterfaces = [ "tailscale0" ];
+
+    # allow the Tailscale UDP port through the firewall
+    allowedUDPPorts = [ config.services.tailscale.port ];
+
+    # let you SSH in over the public internet
+    allowedTCPPorts = [ 22 ];
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

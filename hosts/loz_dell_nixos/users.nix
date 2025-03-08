@@ -68,6 +68,7 @@ in
         # System Utilities
         lsd
         bash-completion
+        cockpit
         zsh
         zoxide
         autojump
@@ -84,7 +85,8 @@ in
         usbutils
         udiskie
         thefuck
-        caligula
+        caligula # create usb imaage
+        rclone
         gparted
 
         # Networking Tools

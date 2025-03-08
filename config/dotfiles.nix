@@ -26,4 +26,6 @@ in
     };
 
   };
+  xdg.configFile."kwalletrc".source = "${dotfilesPath}/kwalletrc";
+  xdg.configFile."alacritty.toml".source = "${dotfilesPath}/alacritty.toml";
 }
