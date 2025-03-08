@@ -374,6 +374,9 @@ in
     packages = with pkgs; [
       noto-fonts-emoji
       noto-fonts-cjk-sans
+      nerd-fonts.fira-code
+      nerd-fonts.droid-sans-mono
+      nerd-fonts.sauce-code-pro
       font-awesome
       symbola
       material-icons

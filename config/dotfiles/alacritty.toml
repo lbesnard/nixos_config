@@ -2,7 +2,7 @@
 WINIT_X11_SCALE_FACTOR = "1.55"
 
 [font]
-size = 6
+size = 10
 
 [font.bold]
 family = "SauceCodePro Nerd Font Mono"
@@ -20,9 +20,6 @@ style = "Italic"
 family = "SauceCodePro Nerd Font Mono"
 style = "Regular"
 
-[mouse.url.launcher]
-args = "--new-tab"
-program = "opera"
 
 [scrolling]
 history = 10000
