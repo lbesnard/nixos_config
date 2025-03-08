@@ -173,16 +173,30 @@ fi
 
 # forgit aliases https://github.com/wfxr/forgit written manually not to conflict
 # with grc tool
-alias ga=forgit::add
-alias gcf=forgit::checkout::file
-alias gbl=forgit::blame
-alias gd=forgit::diff
-alias glo=forgit::log
-alias grh=forgit::reset::head
-alias grco=forgit::revert::commit  # grco not to conflict with grc
-alias gcp=forgit::cherry::pick
-alias gbl=forgit::blame
-alias gclean=forgit::clean
+if command -v forgit > /dev/null; then # installed for bash
+  alias ga=forgit::add
+  alias gi=forgit::ignore
+  alias gcf=forgit::checkout::file
+  alias gbl=forgit::blame
+  alias gd=forgit::diff
+  alias glo=forgit::log
+  alias grh=forgit::reset::head
+  alias grco=forgit::revert::commit  # grco not to conflict with grc
+  alias gcp=forgit::cherry::pick
+  alias gbl=forgit::blame
+  alias gclean=forgit::clean
+
+elif command -v git-forgit > /dev/null; then # installed for bash
+  alias forgit='git-forgit'
+  alias ga='git-forgit add'
+  alias gbl='git-forgit blame'
+  alias grl='git-forgit reflog'
+  alias gcf='git-forgit checkout_file'
+  alias gi='git-forgit ignore'
+  alias grh='git-forgit reset_head'
+  alias gcp='git-forgit cherry_pick'
+  alias gcb='git-forgit cherry_pick_from_branch'
+fi
 
 #########################
 ## conda
