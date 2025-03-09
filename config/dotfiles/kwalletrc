@@ -1,4 +1,4 @@
 [Wallet]
 Default Wallet=Default keyring
-Enabled=false
+Enabled=true
 First Use=false

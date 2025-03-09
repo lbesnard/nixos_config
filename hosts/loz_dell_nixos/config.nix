@@ -445,7 +445,7 @@ in
         # pkgs.hplipWithPlugin
       ];
     };
-    gnome.gnome-keyring.enable = true;
+    gnome.gnome-keyring.enable = false;
     avahi = {
       enable = true;
       nssmdns4 = true;
