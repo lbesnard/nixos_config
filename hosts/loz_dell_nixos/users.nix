@@ -123,6 +123,7 @@ in
         ueberzugpp
         ncdu
         gnome-disk-utility
+        android-tools
 
         # Multimedia & Graphics
         ffmpeg
@@ -162,6 +163,7 @@ in
         # Virtualisation & Containers
         virtualbox
         virt-manager
+        libvirt-glib
         qemu
         docker
         docker-compose

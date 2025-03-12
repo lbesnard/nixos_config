@@ -40,20 +40,22 @@ with lib;
         ];
 
         "hyprland/workspaces" = {
+          # format = "{name}n{windows}";
           format = "{name}";
           format-icons = {
             default = " ";
             active = " ";
             urgent = " ";
           };
-          # window-rewrite-default: "",
-          # window-rewrite: {
-          #   "title<.*youtube.*>": "", // Windows whose titles contain "youtube"
-          #   "class<firefox>": "", // Windows whose classes are "firefox"
-          #   "class<brave>": "", // Windows whose classes are "firefox"
-          #   "foot": "", // Windows that contain "foot" in either class or title. For optimization reasons, it will only match against a title if at least one other window explicitly matches against a title.
-          #   "code": "󰨞",
-          # }
+          # format-window-separator = "n";
+          # window-rewrite-default = "";
+          # window-rewrite = {
+          #   "title<.*youtube.*>" = ""; # # Windows whose titles contain "youtube"
+          #   "class<firefox>" = ""; # # Windows whose classes are "firefox"
+          #   "class<brave>" = ""; # # Windows whose classes are "firefox"
+          #   "foot" = ""; # # Windows that contain "foot" in either class or title. For optimization reasons, it will only match against a title if at least one other window explicitly matches against a title.
+          #   "code" = "󰨞";
+          # };
           on-scroll-up = "hyprctl dispatch workspace e+1";
           on-scroll-down = "hyprctl dispatch workspace e-1";
         };

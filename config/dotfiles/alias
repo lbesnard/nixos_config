@@ -635,7 +635,6 @@ function funk_rsync() {
         --exclude="*.jpg_original*" \
         --exclude="docker_photoprism" \
         --exclude="photoprism" \
-        --exclude=".*" \
         --exclude="komga/logs/.*" \
         --exclude="komga/lucene/.*" \
         --exclude="komga/artemis/.*" \
@@ -760,6 +759,15 @@ mount_beefunk_pics() {
   fi
 }
 
+# mount only when close to efunk server
+mount_efunknuc_pics() {
+  if [[ -d ~/beefunk_pictures/ ]]; then
+    sshfs lbesnard@evrynucfunk.lan:/media/beefunk_12tb_1/pictures beefunk_pictures
+  else
+    mkdir -p ~/beefunk_pictures/ &&    sshfs lbesnard@evrynucfunk.lan:/media/beefunk_12tb_1/pictures beefunk_pictures
+  fi
+}
+
 dask_tunnel() {
   if [ "$#" -ne 3 ]; then
   echo "Usage: dask_tunnel <target_host> <ssh_host> <token>"
@@ -792,3 +800,52 @@ jupyter_tunnel(){
   unset -f ssh 
   ssh -L 8080:localhost:8888 laptop_work -N &
 }
+
+# function to create the norwegian diary to Nextcloud
+diary_anki() {
+    cd ~/github_repos/LingoAnki/ || return
+
+    # Create a temporary directory
+    temp_dir=$(mktemp -d)
+    temp_shell_nix="$temp_dir/shell.nix"
+
+    # Write the temporary shell.nix
+    cat > "$temp_shell_nix" <<EOF
+{
+  pkgs ? import <nixpkgs> { },
+}:
+let
+  fhs = pkgs.buildFHSEnv {
+    name = "my-fhs-environment";
+
+    targetPkgs = _: [
+      pkgs.micromamba
+    ];
+
+    profile = ''
+      set -e
+      eval "\$(micromamba shell hook --shell=posix)"
+      envName=lingoAnki
+
+      # https://stackoverflow.com/questions/75080993/dbuserrorresponse-while-running-poetry-install
+      export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
+      export MAMBA_ROOT_PREFIX=\${builtins.getEnv "PWD"}/.mamba
+      if ! test -d \$MAMBA_ROOT_PREFIX/envs/lingoAnki; then
+          micromamba env create --yes -q -f environment.yml && micromamba activate \$envName && poetry install --with dev
+      fi
+      micromamba activate \$envName
+      set +e
+      diaryAnki -m /home/lbesnard/Nextcloud/joplin/18cf5fb35d3d4e20b5c6a4be0a56e429.md -d "Norwegian 🇳🇴:::Diary 📖" -o ~/Nextcloud_efunk/Anki_Norwegian/ -p
+    '';
+  };
+in
+fhs.env
+EOF
+
+    # Run nix-shell using the temporary shell.nix
+    nix-shell "$temp_shell_nix"
+
+    # Remove the temporary directory and its contents
+    rm -rf "$temp_dir"
+}
+
