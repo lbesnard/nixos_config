@@ -835,7 +835,11 @@ let
       fi
       micromamba activate \$envName
       set +e
-      diaryAnki -m /home/lbesnard/Nextcloud/joplin/18cf5fb35d3d4e20b5c6a4be0a56e429.md -d "Norwegian 🇳🇴:::Diary 📖" -o ~/Nextcloud_efunk/Anki_Norwegian/ -p
+      # for nexcloud_efunk
+      diaryAnki -m /home/lbesnard/Nextcloud_efunk/joplin/abf6d92db1ad4cbf984a8b1d5458f446.md -d "Norwegian 🇳🇴:::Diary 📖" -o ~/Nextcloud_efunk/Anki_Norwegian/ -p
+      #
+      # for nexcloud_bfunk
+      #diaryAnki -m /home/lbesnard/Nextcloud/joplin/18cf5fb35d3d4e20b5c6a4be0a56e429.md -d "Norwegian 🇳🇴:::Diary 📖" -o ~/Nextcloud_efunk/Anki_Norwegian/ -p
     '';
   };
 in
