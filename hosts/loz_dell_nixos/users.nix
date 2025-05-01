@@ -179,6 +179,7 @@ in
         # nwg-displays  # has issues https://github.com/nwg-piotr/nwg-displays/issues/81
 
         # Communication
+        hugo # blog
         slack
         zoom-us
         whatsapp-for-linux
