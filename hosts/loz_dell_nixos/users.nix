@@ -28,8 +28,12 @@ in
 
       ignoreShellProgramCheck = true;
       packages = with pkgs; [
+
+        x2goclient
+
         # Development & Programming
         gcc
+        openjdk
         gem
         lua
         cargo
@@ -85,7 +89,9 @@ in
         usbutils
         udiskie
         thefuck
-        caligula # create usb imaage
+        caligula # create usb bootable imaage
+        rpi-imager
+        usbimager
         rclone
         gparted
 
@@ -110,6 +116,7 @@ in
         aria2
         nmap
         filezilla
+        transmission_4-qt
 
         # File & Process Management
         nnn
@@ -134,7 +141,6 @@ in
         inkscape-with-extensions
         kazam
         obs-studio
-
         conjure
         cheese
         imagemagick
@@ -184,6 +190,7 @@ in
         zoom-us
         whatsapp-for-linux
         joplin # manually built
+        # joplin-desktop
         # logseq  ## issue with non free package
         appflowy
         nextcloud-client
@@ -202,6 +209,12 @@ in
         pgcli
         sqlite
         mycli
+
+        # games
+        # emulationstation-de
+        retroarch-full
+        # retroarch-assets
+        # retroarch-joypad-autoconfig
       ];
     };
     # "newuser" = {

@@ -9,7 +9,7 @@
 
 let
   pname = "joplin-desktop";
-  version = "3.2.12";
+  version = "3.5.12";
 
   inherit (stdenv.hostPlatform) system;
   throwSystem = throw "Unsupported system: ${system}";
@@ -26,7 +26,8 @@ let
     url = "https://github.com/laurent22/joplin/releases/download/v${version}/Joplin-${version}${suffix}";
     sha256 =
       {
-        x86_64-linux = "sha256-+2FFQLNT61hmyOkfLKM8VCMBNjImTHMe3DNVmR6Zcvc=";
+        # x86_64-linux = "sha256-+2FFQLNT61hmyOkfLKM8VCMBNjImTHMe3DNVmR6Zcvc=";
+        x86_64-linux = "sha256:63c24806ef8788e0631e4900828fd456b222342de8aa4fb3c2435d6c5b5d729f";
         # x86_64-darwin = "sha256-s7gZSr/5VOg8bqxGPckK7UxDpvmsNgdhjDg+lxnO/lU=";
         # aarch64-darwin = "sha256-UzAGYIKd5swtl6XNFVTPeg0nqwKKtu0e36+LA0Qiusw=";
       }
@@ -103,38 +104,3 @@ let
   };
 in
 if stdenv.hostPlatform.isDarwin then darwin else linux
-
-# {
-#   lib,
-#   appimageTools,
-#   fetchurl,
-# }:
-#
-# let
-#   version = "3.2.12";
-#   pname = "joplin";
-#
-#   src = fetchurl {
-#     url = "https://github.com/laurent22/joplin/releases/download/v${version}/Joplin-${version}.AppImage";
-#     # hash = "sha256-EsTF7W1np5qbQQh3pdqsFe32olvGK3AowGWjqHPEfoM=";
-#   };
-#
-#   appimageContents = appimageTools.extractType1 { inherit name src; };
-# in
-# appimageTools.wrapType2 rec {
-#   inherit pname version src;
-#
-#   extraInstallCommands = ''
-#     substituteInPlace $out/share/applications/${pname}.desktop \
-#       --replace-fail 'Exec=AppRun' 'Exec=${meta.mainProgram}'
-#   '';
-#
-#   meta = {
-#     description = "Joplin - An open-source note-taking and to-do application";
-#     homepage = "https://joplinapp.org";
-#     license = lib.licenses.asl20;
-#     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
-#     maintainers = with lib.maintainers; [ onny ];
-#     platforms = [ "x86_64-linux" ];
-#   };
-# }

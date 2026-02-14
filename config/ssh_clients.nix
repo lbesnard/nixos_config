@@ -67,6 +67,22 @@
       forwardX11 = true;
     };
 
+    "knulli" = {
+      hostname = "KNULLI.local";
+      port = 22;
+      forwardAgent = true;
+      forwardX11 = true;
+      user = "root";
+    };
+
+    "batocera" = {
+      hostname = "BATOCERA.local";
+      port = 22;
+      forwardAgent = true;
+      forwardX11 = true;
+      user = "root";
+    };
+
     "ec2_cloudopt" = {
       hostname = "13.55.255.109";
       user = "ubuntu";
