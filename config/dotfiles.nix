@@ -1,31 +1,17 @@
-{ config, pkgs, ... }:
+{ config, pkgs, dotfiles-src, dotfiles-private-src, ... }:
 let
-  dotfilesPath = ./dotfiles;
-  ghPath = ./gh;
   scriptPath = ./scripts;
-
 in
 {
-  # xdg.configFile."gh".source = ghPath;
-
   home.file = {
-    ".gitconfig" = {
-      source = "${dotfilesPath}/gitconfig";
-    };
-    ".alias" = {
-      source = "${dotfilesPath}/alias";
-    };
-    ".bashrc-personal" = {
-      source = "${dotfilesPath}/bashrc-personal";
-    };
-    ".aws/config" = {
-      source = "${dotfilesPath}/aws/config";
-    };
-    ".config/hypr/toggle_keyboard_layout.sh" = {
-      source = "${scriptPath}/toggle_keyboard_layout.sh";
-    };
-
+    ".gitconfig".source = "${dotfiles-src}/gitconfig";
+    ".alias".source = "${dotfiles-src}/alias";
+    # NixOS-local file (not in dotfiles repo)
+    ".bashrc-personal".source = ./bashrc-personal;
+    ".aws/config".source = "${dotfiles-src}/aws/config";
+    ".config/hypr/toggle_keyboard_layout.sh".source = "${scriptPath}/toggle_keyboard_layout.sh";
   };
-  xdg.configFile."kwalletrc".source = "${dotfilesPath}/kwalletrc";
-  xdg.configFile."alacritty.toml".source = "${dotfilesPath}/alacritty.toml";
+  # NixOS-local file (not in dotfiles repo)
+  xdg.configFile."kwalletrc".source = ./kwalletrc;
+  xdg.configFile."alacritty.toml".source = "${dotfiles-src}/config/alacritty/alacritty.toml";
 }

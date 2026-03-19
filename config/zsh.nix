@@ -1,27 +1,16 @@
-{ config, pkgs, ... }:
-let
-  zshPath = ./zsh;
-in
+{ config, pkgs, dotfiles-src, ... }:
 {
   home.file = {
-    ".zshrc" = {
-      source = "${zshPath}/zshrc";
-    };
-    ".zshrc.common" = {
-      source = "${zshPath}/zshrc.common";
-    };
-    ".zshrc.local" = {
-      source = "${zshPath}/zshrc.local";
-    };
+    ".zshrc".source = "${dotfiles-src}/zsh/zshrc";
+    ".zshrc.common".source = "${dotfiles-src}/zsh/zshrc.common";
+    ".zshrc.local".source = "${dotfiles-src}/zsh/zshrc.laptop";
     ".zsh_functions" = {
-      source = "${zshPath}/zsh_functions";
+      source = "${dotfiles-src}/zsh/functions";
       recursive = true;
     };
-    ".alias_forgit" = {
-      source = "${zshPath}/alias_forgit";
-    };
+    ".alias_forgit".source = "${dotfiles-src}/alias_forgit";
     ".zsh_alias" = {
-      source = "${zshPath}/zsh_alias";
+      source = "${dotfiles-src}/zsh_alias";
       recursive = true;
     };
   };

@@ -1,14 +1,7 @@
-{ config, pkgs, ... }:
-let
-  tmuxPath = ./tmux;
-in
+{ config, pkgs, dotfiles-src, ... }:
 {
   home.file = {
-    ".tmux.conf" = {
-      source = "${tmuxPath}/tmux.conf";
-    };
-    ".tmux.conf.laptop" = {
-      source = "${tmuxPath}/tmux.conf.laptop";
-    };
+    ".tmux.conf".source = "${dotfiles-src}/tmux/tmux.conf";
+    ".tmux.conf.laptop".source = "${dotfiles-src}/tmux/tmux.conf.laptop";
   };
 }
