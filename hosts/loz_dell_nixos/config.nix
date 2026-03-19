@@ -378,7 +378,6 @@ in
       nerd-fonts.droid-sans-mono
       nerd-fonts.sauce-code-pro
       font-awesome
-      symbola
       material-icons
     ];
   };
