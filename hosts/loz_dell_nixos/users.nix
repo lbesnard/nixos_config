@@ -213,9 +213,12 @@ in
 
         # games
         # emulationstation-de
-        retroarch-full
-        # retroarch-assets
-        # retroarch-joypad-autoconfig
+        (pkgs.retroarch.withCores (cores: with cores; [
+          snes9x    # SNES
+          nestopia   # NES
+          mgba       # GBA
+          mupen64plus # N64
+        ]))
       ];
     };
     # "newuser" = {
