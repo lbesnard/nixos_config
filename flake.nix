@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
     home-manager.url = "github:nix-community/home-manager/release-25.11";
@@ -38,6 +39,7 @@
             inherit inputs;
             inherit username;
             inherit host;
+            pkgs-unstable = import inputs.nixpkgs-unstable { inherit system; config.allowUnfree = true; };
           };
           modules = [
             agenix.nixosModules.default

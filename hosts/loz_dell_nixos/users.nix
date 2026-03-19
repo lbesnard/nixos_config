@@ -1,5 +1,6 @@
 {
   pkgs,
+  pkgs-unstable,
   username,
   ...
 }:
@@ -144,7 +145,7 @@ in
         cheese
         imagemagick
         krita
-        darktable
+        pkgs-unstable.darktable
         hugin # panorama
         digikam
         evince
