@@ -66,6 +66,7 @@ in
         # github
         git
         gh
+        gh-copilot
         gh-dash
         lazygit
         zsh-forgit
