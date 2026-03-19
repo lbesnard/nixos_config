@@ -38,10 +38,7 @@
       fi
 
       # otherwise authenticate with tailscale
-      #
-      config.age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-      config.age.secrets.tailscale_token.path
-      ${tailscale}/bin/tailscale up -authkey tskey-auth-${config.age.secrets."tailscale_token".path}
+      ${tailscale}/bin/tailscale up --auth-key file:${config.age.secrets."tailscale_token".path}
     '';
   };
 
