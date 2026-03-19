@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   username,
   host,
   ...
@@ -11,7 +12,7 @@ in
   # Home Manager Settings
   home.username = "${username}";
   home.homeDirectory = "/home/${username}";
-  home.stateVersion = "25.11";
+  home.stateVersion = "25.05";
 
   # Import Program Configurations
   imports = [
@@ -91,8 +92,8 @@ in
   };
   qt = {
     enable = true;
-    style.name = "adwaita-dark";
-    platformTheme.name = "gtk3";
+    style.name = lib.mkForce "adwaita-dark";
+    platformTheme.name = lib.mkForce "gtk3";
   };
 
   # Scripts
@@ -151,8 +152,8 @@ in
   # Install & Configure Git
   programs.git = {
     enable = true;
-    userName = "${gitUsername}";
-    userEmail = "${gitEmail}";
+    settings.user.name = "${gitUsername}";
+    settings.user.email = "${gitEmail}";
   };
 
   programs.gh = {

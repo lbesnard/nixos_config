@@ -76,7 +76,6 @@ in
         zsh
         zoxide
         autojump
-        thefuck
         fasd
         btop
         lnav
@@ -88,7 +87,7 @@ in
         p7zip
         usbutils
         udiskie
-        thefuck
+        # thefuck
         caligula # create usb bootable imaage
         rpi-imager
         usbimager
@@ -163,7 +162,7 @@ in
         # Security & Password Management
         authenticator
         keepassxc
-        pinentry
+        pinentry-curses
         ydotool
 
         # Virtualisation & Containers
@@ -188,7 +187,7 @@ in
         hugo # blog
         slack
         zoom-us
-        whatsapp-for-linux
+        wasistlos
         joplin # manually built
         # joplin-desktop
         # logseq  ## issue with non free package

@@ -5,13 +5,13 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
-    home-manager.url = "github:nix-community/home-manager/master";
+    home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # nixpkgs-camera-working.url = "github:nixos/nixpkgs?rev=5633bcff0c6162b9e4b5f1264264611e950c8ec7";
 
     agenix.url = "github:ryantm/agenix";
 
-    stylix.url = "github:danth/stylix";
+    stylix.url = "github:danth/stylix/release-25.11";
     fine-cmdline = {
       url = "github:VonHeikemen/fine-cmdline.nvim";
       flake = false;
