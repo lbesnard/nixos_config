@@ -495,6 +495,7 @@ in
   #     };
 
   programs.nix-ld.enable = true;
+  programs.zsh.enable = true; # required for zsh to be a valid login shell (/etc/shells)
   programs.nix-ld.libraries = with pkgs; [
     micromamba
     poetry

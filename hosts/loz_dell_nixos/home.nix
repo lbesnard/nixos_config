@@ -46,6 +46,13 @@ in
   };
   home.file.".face.icon".source = ../../config/face.jpg;
   home.file.".config/face.jpg".source = ../../config/face.jpg;
+
+  # NixOS-specific aliases available to all shells via ~/.alias sourcing this file
+  home.file.".alias.nixos".text = ''
+    alias fr='nh os switch --hostname ${host} /home/${username}/nixos_config'
+    alias fu='nh os switch --hostname ${host} --update /home/${username}/nixos_config'
+    alias ncg='nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot'
+  '';
   home.file.".config/swappy/config".text = ''
     [Default]
     save_dir=/home/${username}/Pictures/Screenshots
@@ -78,8 +85,9 @@ in
   stylix.targets.waybar.enable = false;
   stylix.targets.rofi.enable = false;
   stylix.targets.hyprland.enable = false;
-  # Dotbot manages ~/.config/nvim (LazyVim from dotfiles); disable Stylix's nvim theme
   stylix.targets.neovim.enable = false;
+  stylix.targets.ghostty.enable = false; # managed via dotfiles
+  stylix.fonts.sizes.terminal = 12;
   gtk = {
     iconTheme = {
       name = "Papirus-Dark";
@@ -249,7 +257,6 @@ in
     gh-dash = {
       enable = true;
     };
-    ghostty.enable = true;
     btop = {
       enable = true;
       settings = {
@@ -292,20 +299,9 @@ in
           source $HOME/.bashrc-personal
         fi
       '';
-      shellAliases = {
-        sv = "sudo nvim";
-        fr = "nh os switch --hostname ${host} /home/${username}/nixos_config";
-        fu = "nh os switch --hostname ${host} --update /home/${username}/nixos_config";
-        zu = "sh <(curl -L https://gitlab.com/Zaney/zaneyos/-/raw/main/install-zaneyos.sh)";
-        ncg = "nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
-        v = "nvim";
-        cat = "bat";
-        # ls = "eza --icons";
-        # ll = "eza -lh --icons --grid --group-directories-first";
-        # la = "eza -lah --icons --grid --group-directories-first";
-        ".." = "cd ..";
-      };
     };
+    # NixOS-specific aliases written to ~/.alias.nixos, sourced by ~/.alias on all shells (bash/zsh)
+    # ~/.alias is managed by dotbot and already sources optional files at startup
     home-manager.enable = true;
     hyprlock = {
       enable = true;

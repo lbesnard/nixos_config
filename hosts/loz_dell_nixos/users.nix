@@ -7,7 +7,8 @@
 
 let
   inherit (import ./variables.nix) gitUsername;
-  joplin = pkgs.callPackage ./joplin.nix { }; # Call the package here
+  joplin = pkgs.callPackage ./joplin.nix { };
+  task-tui = pkgs.callPackage ./task-tui.nix { };
 in
 {
 
@@ -25,7 +26,7 @@ in
         "docker"
         "ydotool"
       ];
-      shell = pkgs.bash;
+      shell = pkgs.zsh;
 
       ignoreShellProgramCheck = true;
       packages = with pkgs; [
@@ -210,6 +211,10 @@ in
         pgcli
         sqlite
         mycli
+
+        # task management
+        taskwarrior3
+        task-tui
 
         # games
         # emulationstation-de
