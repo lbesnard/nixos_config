@@ -78,6 +78,8 @@ in
   stylix.targets.waybar.enable = false;
   stylix.targets.rofi.enable = false;
   stylix.targets.hyprland.enable = false;
+  # Dotbot manages ~/.config/nvim (LazyVim from dotfiles); disable Stylix's nvim theme
+  stylix.targets.neovim.enable = false;
   gtk = {
     iconTheme = {
       name = "Papirus-Dark";

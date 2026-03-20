@@ -10,6 +10,14 @@ in
   home.file.".config/hypr/toggle_keyboard_layout.sh".source = "${scriptPath}/toggle_keyboard_layout.sh";
   xdg.configFile."kwalletrc".source = ./kwalletrc;
 
+  # Remove dotbot-managed ~/.bashrc before home-manager's checkLinkTargets so
+  # programs.bash can create its own (with NixOS-specific fr/fu aliases)
+  home.activation.removeConflicts = config.lib.dag.entryBefore [ "checkLinkTargets" ] ''
+    if [ -L "$HOME/.bashrc" ]; then
+      rm -f "$HOME/.bashrc"
+    fi
+  '';
+
   # Run dotbot to symlink all public dotfiles (same as on any other machine)
   # Exclude ~/.bashrc — managed by programs.bash (has NixOS-specific aliases like fr/fu)
   home.activation.dotfiles = config.lib.dag.entryAfter [ "writeBoundary" ] ''
