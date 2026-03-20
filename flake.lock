@@ -111,39 +111,6 @@
         "type": "github"
       }
     },
-    "dotfiles": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1773969254,
-        "narHash": "sha256-tDdiWIJtmUxDmhEvdSSFQLIt6VGh20vz+O/8LQDNDyM=",
-        "owner": "lbesnard",
-        "repo": "dotfiles",
-        "rev": "c989f6f75e66f0d900676814baea45200c5eb1c3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "lbesnard",
-        "ref": "NixAlias",
-        "repo": "dotfiles",
-        "type": "github"
-      }
-    },
-    "dotfiles-private": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1773890086,
-        "narHash": "sha256-4Rtrie1UWyevK518ruTeetKbVvme8XvhxEmSndUMjzc=",
-        "ref": "refs/heads/master",
-        "rev": "79b4fe6268e6a6a376e2dec02c53c05f83a00f7a",
-        "revCount": 105,
-        "type": "git",
-        "url": "ssh://git@github.com/lbesnard/dotfiles_private"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/lbesnard/dotfiles_private"
-      }
-    },
     "fine-cmdline": {
       "flake": false,
       "locked": {
@@ -366,8 +333,6 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
-        "dotfiles": "dotfiles",
-        "dotfiles-private": "dotfiles-private",
         "fine-cmdline": "fine-cmdline",
         "home-manager": "home-manager_2",
         "nixpkgs": "nixpkgs_2",

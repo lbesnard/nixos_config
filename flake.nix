@@ -17,14 +17,6 @@
       url = "github:VonHeikemen/fine-cmdline.nvim";
       flake = false;
     };
-    dotfiles = {
-      url = "github:lbesnard/dotfiles/NixAlias";
-      flake = false;
-    };
-    dotfiles-private = {
-      url = "git+ssh://git@github.com/lbesnard/dotfiles_private";
-      flake = false;
-    };
   };
 
   outputs =
@@ -68,8 +60,6 @@
                 inherit username;
                 inherit inputs;
                 inherit host;
-                dotfiles-src = inputs.dotfiles;
-                dotfiles-private-src = inputs.dotfiles-private;
               };
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
