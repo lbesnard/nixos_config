@@ -23,10 +23,14 @@ in
   home.activation.dotfiles = config.lib.dag.entryAfter [ "writeBoundary" ] ''
     if [ -d "${dotfiles}" ]; then
       cd "${dotfiles}"
-      # Filter out ~/.bashrc from dotbot to avoid conflicting with home-manager's programs.bash
-      grep -v '\.bashrc' install.conf.yaml > /tmp/nixos-dotbot.yaml
-      ${pkgs.dotbot}/bin/dotbot -c /tmp/nixos-dotbot.yaml -d "${dotfiles}"
-      rm -f /tmp/nixos-dotbot.yaml
+      # Write filtered config into dotfiles dir so dotbot uses it as base directory
+      # (dotbot resolves relative paths from the config file's directory)
+      grep -v '\.bashrc' install.conf.yaml > "${dotfiles}/.nixos-install.yaml"
+      # Use || true: shell commands in install.conf.yaml may fail in systemd context
+      # (e.g. chown $USER when $USER is unset, chmod on non-existent ~/.zplug)
+      # but the symlinks themselves are created correctly before those run
+      ${pkgs.dotbot}/bin/dotbot -c "${dotfiles}/.nixos-install.yaml" || true
+      rm -f "${dotfiles}/.nixos-install.yaml"
     fi
 
     # Private dotfiles — no install.conf.yaml, symlink manually
