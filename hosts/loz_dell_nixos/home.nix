@@ -90,11 +90,7 @@ in
       gtk-application-prefer-dark-theme = 1;
     };
   };
-  qt = {
-    enable = true;
-    style.name = lib.mkForce "adwaita-dark";
-    platformTheme.name = lib.mkForce "gtk3";
-  };
+  # Qt theming managed by stylix
 
   # Scripts
   home.packages = [
