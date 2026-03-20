@@ -1,7 +1,4 @@
 { config, pkgs, ... }:
-let
-  nvimPath = ./lazyvim;
-in
 {
   programs = {
     neovim = {
@@ -46,5 +43,5 @@ in
       ];
     };
   };
-  xdg.configFile."nvim".source = nvimPath;
+  # ~/.config/nvim is managed by dotbot (symlinked from ~/github_repos/dotfiles/nvim/)
 }

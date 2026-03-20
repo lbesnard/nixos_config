@@ -11,10 +11,14 @@ in
   xdg.configFile."kwalletrc".source = ./kwalletrc;
 
   # Run dotbot to symlink all public dotfiles (same as on any other machine)
+  # Exclude ~/.bashrc — managed by programs.bash (has NixOS-specific aliases like fr/fu)
   home.activation.dotfiles = config.lib.dag.entryAfter [ "writeBoundary" ] ''
     if [ -d "${dotfiles}" ]; then
       cd "${dotfiles}"
-      ${pkgs.dotbot}/bin/dotbot -c install.conf.yaml
+      # Filter out ~/.bashrc from dotbot to avoid conflicting with home-manager's programs.bash
+      grep -v '\.bashrc' install.conf.yaml > /tmp/nixos-dotbot.yaml
+      ${pkgs.dotbot}/bin/dotbot -c /tmp/nixos-dotbot.yaml -d "${dotfiles}"
+      rm -f /tmp/nixos-dotbot.yaml
     fi
 
     # Private dotfiles — no install.conf.yaml, symlink manually
