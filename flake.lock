@@ -114,15 +114,16 @@
     "dotfiles": {
       "flake": false,
       "locked": {
-        "lastModified": 1773890086,
-        "narHash": "sha256-T57ag3xMBdXLCti80js00KN4CDur7bkFNjm2PzIKOU4=",
+        "lastModified": 1773969254,
+        "narHash": "sha256-tDdiWIJtmUxDmhEvdSSFQLIt6VGh20vz+O/8LQDNDyM=",
         "owner": "lbesnard",
         "repo": "dotfiles",
-        "rev": "f1d90efb35393e921e6bf54a73020facf787f6c9",
+        "rev": "c989f6f75e66f0d900676814baea45200c5eb1c3",
         "type": "github"
       },
       "original": {
         "owner": "lbesnard",
+        "ref": "NixAlias",
         "repo": "dotfiles",
         "type": "github"
       }

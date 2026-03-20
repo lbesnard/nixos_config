@@ -18,7 +18,7 @@
       flake = false;
     };
     dotfiles = {
-      url = "github:lbesnard/dotfiles";
+      url = "github:lbesnard/dotfiles/NixAlias";
       flake = false;
     };
     dotfiles-private = {
