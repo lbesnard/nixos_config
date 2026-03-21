@@ -70,8 +70,13 @@ in
       }
     );
     # This is for OBS Virtual Cam Support
+    # intel_ipu6_psys is loaded via udev (hardware.ipu6) — not listed here to avoid
+    # systemd-modules-load timeout during live switch activations.
     kernelModules = [ "v4l2loopback" ];
-    extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
+    extraModulePackages = [
+      config.boot.kernelPackages.v4l2loopback
+      # ipu6-drivers is already pulled in by hardware.ipu6.enable
+    ];
     # Needed For Some Steam Games
     kernel.sysctl = {
       "vm.max_map_count" = 2147483642;
@@ -195,6 +200,7 @@ in
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
+  i18n.supportedLocales = [ "en_US.UTF-8/UTF-8" "C.UTF-8/UTF-8" ];
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
