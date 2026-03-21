@@ -71,9 +71,9 @@ with lib;
             sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
             accel_profile = flat
           }
-          windowrule = noborder,^(wofi)$
-          windowrule = center,^(wofi)$
-          windowrule = float,^(steam)$
+          windowrulev2 = noborder, class:^(wofi)$
+          windowrulev2 = center, class:^(wofi)$
+          windowrulev2 = float, class:^(steam)$
           windowrulev2 = float, class:(xdg-desktop-portal-gtk)
           windowrulev2 = float, class:^(nwg-look|qt5ct|qt6ct)$
           windowrulev2 = float, class:^(nm-applet|nm-connection-editor|blueman-manager)$
@@ -84,15 +84,11 @@ with lib;
           windowrulev2 = minsize 1 1, title:^()$,class:^(steam)$
           windowrulev2 = opacity 0.9 0.7, class:^(thunar)$
           # Window Rules For Size
-          windowrule = size 1080 900, ^(steam)$
+          windowrulev2 = size 1080 900, class:^(steam)$
           windowrulev2 = size 70% 70%, class:^(gnome-system-monitor|org.gnome.SystemMonitor)$
           windowrulev2 = size 70% 70%, class:^(xdg-desktop-portal-gtk)$
           windowrulev2 = size 60% 70%, class:^(qt6ct)$
           windowrulev2 = size 60% 70%, class:^(file-roller|org.gnome.FileRoller)$
-          gestures {
-            workspace_swipe = true
-            workspace_swipe_fingers = 3
-          }
           misc {
             initial_workspace_tracking = 0
             force_default_wallpaper = 0 

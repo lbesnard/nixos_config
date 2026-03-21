@@ -25,6 +25,7 @@ in
         "lp"
         "docker"
         "ydotool"
+        "video"
       ];
       shell = pkgs.zsh;
 

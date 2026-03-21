@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   host,
   username,
   options,
@@ -10,6 +11,19 @@ let
   inherit (import ./variables.nix) keyboardLayout consoleKeyMap;
 in
 {
+  # Override ipu6-camera-hal to build with ipu6epmtl platform plugin.
+  # Nixpkgs ships with -DIPU_VERSIONS=ipu6 (generic) but the Meteor Lake
+  # camera HAL needs ipu6epmtl.so — which only exists when built with
+  # -DIPU_VERSIONS=ipu6epmtl.
+  nixpkgs.overlays = [
+    (_final: prev: {
+      ipu6-camera-hal = prev.ipu6-camera-hal.overrideAttrs (old: {
+        cmakeFlags = builtins.map
+          (f: if lib.strings.hasPrefix "-DIPU_VERSIONS=" f then "-DIPU_VERSIONS=ipu6epmtl" else f)
+          old.cmakeFlags;
+      });
+    })
+  ];
 
   imports = [
     ./tailscale.nix
@@ -461,6 +475,7 @@ in
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+      wireplumber.enable = true;
     };
     rpcbind.enable = false;
     nfs.server.enable = false;
@@ -509,6 +524,13 @@ in
   # Extra Logitech Support
   hardware.logitech.wireless.enable = false;
   hardware.logitech.wireless.enableGraphical = false;
+
+  # Intel IPU6 webcam (Core Ultra / Meteor Lake on Dell Latitude)
+  # Enables ipu6epmtl camera HAL + libcamera bridge so apps can use the built-in camera
+  hardware.ipu6 = {
+    enable = true;
+    platform = "ipu6epmtl";
+  };
 
   # Bluetooth Support
   hardware.bluetooth.enable = true;

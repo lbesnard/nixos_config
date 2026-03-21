@@ -22,6 +22,10 @@ in
     # ~/.config/gh: dotbot manages this dir, but programs.gh owns it on NixOS
     rm -f "$HOME/.config/gh/config.yml"
     rm -f "$HOME/.config/gh/config.yml.backup"
+    # ~/.aws: agenix manages credentials; remove dotbot symlink so agenix file is used
+    if [ -L "$HOME/.aws" ]; then
+      rm -f "$HOME/.aws"
+    fi
   '';
 
   # Run dotbot to symlink all public dotfiles (same as on any other machine)
@@ -29,9 +33,12 @@ in
   home.activation.dotfiles = config.lib.dag.entryAfter [ "writeBoundary" ] ''
     if [ -d "${dotfiles}" ]; then
       cd "${dotfiles}"
-      # Write filtered config into dotfiles dir so dotbot uses it as base directory
-      # (dotbot resolves relative paths from the config file's directory)
-      grep -v '\.bashrc\|\.config/gh' install.conf.yaml > "${dotfiles}/.nixos-install.yaml"
+      # Exclude entries managed by NixOS on this machine:
+      # - ~/.bashrc: managed by programs.bash (NixOS fr/fu aliases)
+      # - ~/.config/gh: managed by programs.gh
+      # - ~/.aws: managed by agenix (secrets) — dotbot must not overwrite credentials
+      # NOTE: pattern uses $ anchor so ~/.config/gh: doesn't match ~/.config/ghostty
+      grep -vE '\.bashrc|\.config/gh:|\.aws:' install.conf.yaml > "${dotfiles}/.nixos-install.yaml"
       # Use || true: shell commands in install.conf.yaml may fail in systemd context
       # (e.g. chown $USER when $USER is unset, chmod on non-existent ~/.zplug)
       # but the symlinks themselves are created correctly before those run
@@ -44,6 +51,10 @@ in
       ln -sf "${dotfiles-private}/ssh/config" "${home}/.ssh/config"
       chmod 600 "${home}/.ssh/config" 2>/dev/null || true
       ln -sf "${dotfiles-private}/taskrc" "${home}/.taskrc"
+      # ~/.aws: must be a real dir so agenix can write credentials there safely
+      # (if dotbot made it a symlink into the repo, credentials end up in git!)
+      mkdir -p "${home}/.aws"
+      ln -sf "${dotfiles-private}/aws/config" "${home}/.aws/config" 2>/dev/null || true
     fi
   '';
 }
