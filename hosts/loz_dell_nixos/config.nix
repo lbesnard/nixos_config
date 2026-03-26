@@ -509,6 +509,15 @@ in
     platform = "ipu6epmtl";
   };
 
+  # AR0234 sensor only supports 1280x960 and 1920x1200 (4:3).
+  # - height=960 fixes the default 1280x720 the HAL rejects
+  # - pipeline caps force icamerasrc to negotiate 1280x960 from the start,
+  #   rather than defaulting to 1920x1080 NV12 which also gets rejected
+  services.v4l2-relayd.instances.ipu6 = {
+    input.pipeline = lib.mkForce "icamerasrc ! video/x-raw,format=NV12,width=1280,height=960,framerate=30/1";
+    input.height = 960;
+  };
+
   # Bluetooth Support
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
