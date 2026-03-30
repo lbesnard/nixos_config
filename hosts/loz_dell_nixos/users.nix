@@ -122,6 +122,8 @@ in
         transmission_4-qt
 
         # File & Process Management
+        direnv
+        nix-direnv
         nnn
         ranger
         tree
