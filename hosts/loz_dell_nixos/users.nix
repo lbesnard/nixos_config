@@ -138,6 +138,7 @@ in
         android-tools
 
         # Multimedia & Graphics
+        rmpc
         ffmpeg
         vlc
         digikam
