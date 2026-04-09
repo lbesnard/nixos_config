@@ -138,7 +138,7 @@ in
         android-tools
 
         # Multimedia & Graphics
-        rmpc
+        rmpc  # mpd tui client
         ffmpeg
         vlc
         digikam
