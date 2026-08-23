@@ -137,6 +137,13 @@ in
         gnome-disk-utility
         android-tools
 
+        # netcdf
+        udunits
+
+        wineWowPackages.stagingFull
+
+        mariadb
+
         # Multimedia & Graphics
         rmpc  # mpd tui client
         ffmpeg
@@ -177,7 +184,7 @@ in
         virt-manager
         libvirt-glib
         qemu
-        docker
+        docker_29
         docker-compose
 
         # Desktop & Window Management
