@@ -148,7 +148,7 @@ in
         rmpc  # mpd tui client
         ffmpeg
         vlc
-        digikam
+        pkgs-unstable.digikam
         shotcut
         audacity
         inkscape-with-extensions
@@ -160,7 +160,6 @@ in
         krita
         pkgs-unstable.darktable
         hugin # panorama
-        digikam
         evince
         handbrake
         yt-dlp
