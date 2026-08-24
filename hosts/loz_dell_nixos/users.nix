@@ -199,7 +199,7 @@ in
         # Communication
         hugo # blog
         slack
-        zoom-us
+        # zoom-us
         wasistlos
         joplin # manually built
         # joplin-desktop
