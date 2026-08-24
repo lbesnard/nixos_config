@@ -159,6 +159,7 @@ in
         imagemagick
         krita
         pkgs-unstable.darktable
+        rawtherapee
         hugin # panorama
         evince
         handbrake
