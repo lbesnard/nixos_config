@@ -136,6 +136,7 @@ in
         ncdu
         gnome-disk-utility
         android-tools
+        rmlint
 
         # netcdf
         udunits
