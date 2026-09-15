@@ -9,7 +9,7 @@
 
 let
   pname = "joplin-desktop";
-  version = "3.5.12";
+  version = "3.7.18";
 
   inherit (stdenv.hostPlatform) system;
   throwSystem = throw "Unsupported system: ${system}";
@@ -27,7 +27,7 @@ let
     sha256 =
       {
         # x86_64-linux = "sha256-+2FFQLNT61hmyOkfLKM8VCMBNjImTHMe3DNVmR6Zcvc=";
-        x86_64-linux = "sha256:63c24806ef8788e0631e4900828fd456b222342de8aa4fb3c2435d6c5b5d729f";
+        x86_64-linux = "sha256:c7ed7eeb6985621b75f0d09088cd01efc9af7aa2cfa17649ed4a83a75b29aca5";
         # x86_64-darwin = "sha256-s7gZSr/5VOg8bqxGPckK7UxDpvmsNgdhjDg+lxnO/lU=";
         # aarch64-darwin = "sha256-UzAGYIKd5swtl6XNFVTPeg0nqwKKtu0e36+LA0Qiusw=";
       }
@@ -77,7 +77,7 @@ let
     extraInstallCommands = ''
       wrapProgram $out/bin/${pname} \
         --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform=wayland --enable-features=WaylandWindowDecorations}}"
-      install -Dm444 ${appimageContents}/joplin.desktop -t $out/share/applications
+      install -Dm444 ${appimageContents}/appimagekit-joplin.desktop $out/share/applications/joplin.desktop
       install -Dm444 ${appimageContents}/joplin.png -t $out/share/pixmaps
       substituteInPlace $out/share/applications/joplin.desktop \
         --replace 'Exec=AppRun' 'Exec=${pname}' \

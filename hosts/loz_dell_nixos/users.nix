@@ -165,6 +165,7 @@ in
         evince
         handbrake
         yt-dlp
+        qimgv
 
         # Office & Documentation
         libreoffice-qt6-fresh
