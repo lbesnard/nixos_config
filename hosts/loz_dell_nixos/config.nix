@@ -543,6 +543,9 @@ in
     };
   };
 
+  # Trust the beefunk.home/beefunk.lan self-signed certificate system-wide
+  security.pki.certificateFiles = [ ./beefunk.crt ];
+
   # Security / Polkit
   security.rtkit.enable = true;
   security.polkit.enable = true;

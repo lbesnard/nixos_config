@@ -99,6 +99,7 @@ in
         gparted
 
         # Networking Tools
+        ungoogled-chromium
         dig
         dnsutils
         wireshark
@@ -159,7 +160,7 @@ in
         cheese
         imagemagick
         krita
-        pkgs-unstable.darktable
+        (pkgs-unstable.darktable.override { withAi = true; })
         rawtherapee
         hugin # panorama
         evince
@@ -180,6 +181,7 @@ in
         keepassxc
         pinentry-curses
         ydotool
+        nssTools # certutil, for managing NSS cert DBs (e.g. Chromium's ~/.pki/nssdb)
 
         # Virtualisation & Containers
         virtualbox
