@@ -204,7 +204,7 @@ in
         # Communication
         hugo # blog
         slack
-        # zoom-us
+        (pkgs-unstable.zoom-us)
         wasistlos
         joplin # manually built
         # joplin-desktop
