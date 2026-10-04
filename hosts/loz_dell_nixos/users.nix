@@ -161,6 +161,8 @@ in
         imagemagick
         krita
         (pkgs-unstable.darktable.override { withAi = true; })
+        enblend-enfuse  # photos staking
+        hdrmerge
         rawtherapee
         hugin # panorama
         evince
