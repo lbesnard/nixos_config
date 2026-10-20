@@ -403,6 +403,10 @@ in
 
   services.hardware.bolt.enable = true; # essential to have external keyboard and mouse working
 
+  # Switch Frame Tap: installs the udev rule (1209:5f1e) so the viewer may
+  # open the Nintendo Switch over USB without root.
+  services.udev.packages = [ (pkgs.callPackage ./switch-frame-tap.nix { }) ];
+
   # Services to start
   services = {
     xserver = {

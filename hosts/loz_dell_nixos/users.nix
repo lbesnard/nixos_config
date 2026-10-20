@@ -9,6 +9,7 @@ let
   inherit (import ./variables.nix) gitUsername;
   joplin = pkgs.callPackage ./joplin.nix { };
   task-tui = pkgs.callPackage ./task-tui.nix { };
+  switch-frame-tap = pkgs.callPackage ./switch-frame-tap.nix { };
 in
 {
 
@@ -232,6 +233,9 @@ in
         # task management
         taskwarrior3
         task-tui
+
+        # Nintendo Switch USB streaming/recording viewer
+        switch-frame-tap
 
         # games
         # emulationstation-de
