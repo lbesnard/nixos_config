@@ -203,6 +203,8 @@ in
         wdisplays
         # nwg-displays  # has issues https://github.com/nwg-piotr/nwg-displays/issues/81
 
+        claude-code
+        
         # Communication
         hugo # blog
         slack
