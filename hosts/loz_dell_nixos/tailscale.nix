@@ -1,11 +1,12 @@
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 {
   # make the tailscale command usable to users
-  environment.systemPackages = [ pkgs.tailscale ];
+  environment.systemPackages = [ pkgs-unstable.tailscale ];
 
   # enable the tailscale service
   services.tailscale.enable = true;
+  services.tailscale.package = pkgs-unstable.tailscale;
   # ...
 
   # create a oneshot job to authenticate to Tailscale
@@ -27,12 +28,12 @@
     serviceConfig.Type = "oneshot";
 
     # have the job run this shell script
-    script = with pkgs; ''
+    script = with pkgs-unstable; ''
       # wait for tailscaled to settle
       sleep 2
 
       # check if we are already authenticated to tailscale
-      status="$(${tailscale}/bin/tailscale status -json | ${jq}/bin/jq -r .BackendState)"
+      status="$(${tailscale}/bin/tailscale status -json | ${pkgs.jq}/bin/jq -r .BackendState)"
       if [ $status = "Running" ]; then # if so, then do nothing
         exit 0
       fi
