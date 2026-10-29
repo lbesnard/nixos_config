@@ -113,7 +113,7 @@ in
         awscli2
         curl
         httpie
-        tailscale
+        pkgs-unstable.tailscale
         wireguard-tools
         openvpn
         act
