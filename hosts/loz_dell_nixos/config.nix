@@ -46,7 +46,10 @@ in
     # systemd-modules-load timeout during live switch activations.
     kernelModules = [ "v4l2loopback" ];
     extraModulePackages = [
-      config.boot.kernelPackages.v4l2loopback
+      # DEPMOD=true avoids modules.* buildEnv collisions with the kernel modules output
+      (config.boot.kernelPackages.v4l2loopback.overrideAttrs (old: {
+        installFlags = (old.installFlags or [ ]) ++ [ "DEPMOD=true" ];
+      }))
       # ipu6-drivers is already pulled in by hardware.ipu6.enable
     ];
     # Needed For Some Steam Games
@@ -76,6 +79,7 @@ in
   # Styling Options
   stylix = {
     enable = true;
+    targets.kmscon.enable = false;
     image = ../../config/wallpapers/beautifulmountainscape.jpg;
     # base16Scheme = {
     #   base00 = "232136";
@@ -280,7 +284,7 @@ in
     };
     thunar = {
       enable = true;
-      plugins = with pkgs.xfce; [
+      plugins = with pkgs; [
         thunar-archive-plugin
         thunar-volman
       ];
@@ -350,10 +354,10 @@ in
     obs-studio
     playerctl
     nh
-    nixfmt-rfc-style
+    nixfmt
     discord
     libvirt
-    swww
+    awww
     grim
     slurp
     file-roller
@@ -381,7 +385,7 @@ in
   };
 
   environment.variables = {
-    ZANEYOS_VERSION = "2.3";
+    ZANEYOS_VERSION = "2.6.5";
     ZANEYOS = "true";
   };
 
@@ -556,6 +560,7 @@ in
   # Security / Polkit
   security.rtkit.enable = true;
   security.polkit.enable = true;
+  security.polkit.enablePkexecWrapper = true;
   security.polkit.extraConfig = ''
     polkit.addRule(function(action, subject) {
       if (
@@ -586,6 +591,7 @@ in
   nix = {
     settings = {
       auto-optimise-store = true;
+      download-buffer-size = 200000000;
       experimental-features = [
         "nix-command"
         "flakes"

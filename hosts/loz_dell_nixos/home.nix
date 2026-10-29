@@ -93,6 +93,7 @@ in
       name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme;
     };
+    gtk4.theme = lib.mkForce null;
     gtk3.extraConfig = {
       gtk-application-prefer-dark-theme = 1;
     };
@@ -124,6 +125,7 @@ in
   services = {
     hypridle = {
       enable = true;
+      systemdTarget = "hyprland-session.target";
       settings = {
         general = {
           after_sleep_cmd = "hyprctl dispatch dpms on";
@@ -160,6 +162,7 @@ in
     enable = true;
     settings.user.name = "${gitUsername}";
     settings.user.email = "${gitEmail}";
+    signing.format = null;
   };
 
   programs.gh = {
@@ -273,6 +276,8 @@ in
         wheel_scroll_min_lines = 1;
         window_padding_width = 4;
         confirm_os_window_close = 0;
+        remember_window_size = false;
+        allow_remote_control = "socket-only";
       };
       extraConfig = ''
         tab_bar_style fade

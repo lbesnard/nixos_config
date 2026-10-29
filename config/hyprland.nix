@@ -41,12 +41,12 @@ with lib;
           env = MOZ_ENABLE_WAYLAND, 1
           exec-once = dbus-update-activation-environment --systemd --all
           exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-          exec-once = killall -q swww;sleep .5 && swww init
+          exec-once = killall -q awww-daemon;sleep .5 && awww-daemon
           exec-once = killall -q waybar;sleep .5 && waybar
           exec-once = killall -q swaync;sleep .5 && swaync
           exec-once = nm-applet --indicator
           exec-once = lxqt-policykit-agent
-          exec-once = sleep 1.5 && swww img /home/${username}/Pictures/Wallpapers/beautifulmountainscape.jpg
+          exec-once = sleep 1.5 && awww img /home/${username}/Pictures/Wallpapers/beautifulmountainscape.jpg
           monitor=,preferred,auto,1
           ${extraMonitorSettings}
           general {
@@ -71,24 +71,75 @@ with lib;
             sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
             accel_profile = flat
           }
-          windowrulev2 = noborder, class:^(wofi)$
-          windowrulev2 = center, class:^(wofi)$
-          windowrulev2 = float, class:^(steam)$
-          windowrulev2 = float, class:(xdg-desktop-portal-gtk)
-          windowrulev2 = float, class:^(nwg-look|qt5ct|qt6ct)$
-          windowrulev2 = float, class:^(nm-applet|nm-connection-editor|blueman-manager)$
-          windowrulev2 = float, class:^(file-roller|org.gnome.FileRoller)$ # archive manager
-          windowrulev2 = float, class:([Tt]hunar), title:(File Operation Progress)
-          windowrulev2 = float, class:([Tt]hunar), title:(Confirm to replace files)
-          windowrulev2 = stayfocused, title:^()$,class:^(steam)$
-          windowrulev2 = minsize 1 1, title:^()$,class:^(steam)$
-          windowrulev2 = opacity 0.9 0.7, class:^(thunar)$
-          # Window Rules For Size
-          windowrulev2 = size 1080 900, class:^(steam)$
-          windowrulev2 = size 70% 70%, class:^(gnome-system-monitor|org.gnome.SystemMonitor)$
-          windowrulev2 = size 70% 70%, class:^(xdg-desktop-portal-gtk)$
-          windowrulev2 = size 60% 70%, class:^(qt6ct)$
-          windowrulev2 = size 60% 70%, class:^(file-roller|org.gnome.FileRoller)$
+          windowrule {
+            name = wofi
+            match:class = ^(wofi)$
+            border_size = 0
+            center = on
+          }
+          windowrule {
+            name = steam
+            match:class = ^(steam)$
+            float = on
+            size = 1080 900
+          }
+          windowrule {
+            name = steam-empty-title
+            match:class = ^(steam)$
+            match:title = ^()$
+            stay_focused = on
+            min_size = 1 1
+          }
+          windowrule {
+            name = portal-gtk
+            match:class = (xdg-desktop-portal-gtk)
+            float = on
+            size = 70% 70%
+          }
+          windowrule {
+            name = nwg-look-qt5ct
+            match:class = ^(nwg-look|qt5ct)$
+            float = on
+          }
+          windowrule {
+            name = qt6ct
+            match:class = ^(qt6ct)$
+            float = on
+            size = 60% 70%
+          }
+          windowrule {
+            name = network-bluetooth
+            match:class = ^(nm-applet|nm-connection-editor|blueman-manager)$
+            float = on
+          }
+          windowrule {
+            name = archive-manager
+            match:class = ^(file-roller|org.gnome.FileRoller)$
+            float = on
+            size = 60% 70%
+          }
+          windowrule {
+            name = thunar-file-operation
+            match:class = ([Tt]hunar)
+            match:title = (File Operation Progress)
+            float = on
+          }
+          windowrule {
+            name = thunar-replace
+            match:class = ([Tt]hunar)
+            match:title = (Confirm to replace files)
+            float = on
+          }
+          windowrule {
+            name = thunar-opacity
+            match:class = ^(thunar)$
+            opacity = 0.9 0.7
+          }
+          windowrule {
+            name = system-monitor
+            match:class = ^(gnome-system-monitor|org.gnome.SystemMonitor)$
+            size = 70% 70%
+          }
           misc {
             initial_workspace_tracking = 0
             force_default_wallpaper = 0 
