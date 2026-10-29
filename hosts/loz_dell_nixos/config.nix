@@ -40,7 +40,18 @@ in
   ];
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_zen;
+    # The out-of-tree ov02e10 from ipu6-drivers installs under updates/ and
+    # shadows the in-tree driver. It fails to probe on this laptop
+    # ("failed to find sensor: -121"); the in-tree one works, so drop it.
+    kernelPackages = pkgs.linuxPackages_zen.extend (
+      _self: super: {
+        ipu6-drivers = super.ipu6-drivers.overrideAttrs (old: {
+          postInstall = (old.postInstall or "") + ''
+            find $out -name 'ov02e10.ko*' -delete
+          '';
+        });
+      }
+    );
     # This is for OBS Virtual Cam Support
     # intel_ipu6_psys is loaded via udev (hardware.ipu6) — not listed here to avoid
     # systemd-modules-load timeout during live switch activations.
