@@ -23,6 +23,30 @@ in
           old.cmakeFlags;
       });
     })
+    # nixpkgs ships scrcpy 4.1; bump to 5.0.1
+    (final: prev: {
+      scrcpy = prev.scrcpy.overrideAttrs (old: rec {
+        version = "5.0.1";
+        buildInputs = old.buildInputs ++ [ final.libdrm ];
+        src = final.fetchFromGitHub {
+          owner = "Genymobile";
+          repo = "scrcpy";
+          tag = "v${version}";
+          hash = "sha256-zms3jDqo8CgIyaAglw13dAF0OP7mCP18Z2nIWyq0Thg=";
+        };
+        prebuilt_server = final.fetchurl {
+          name = "scrcpy-server";
+          inherit version;
+          url = "https://github.com/Genymobile/scrcpy/releases/download/v${version}/scrcpy-server-v${version}";
+          hash = "sha256-dk6295gR1SEf6d80ESCIK6mZTHphuJfXvz+2YuU7xTY=";
+        };
+        postInstall = ''
+          mkdir -p "$out/share/scrcpy"
+          ln -s "${prebuilt_server}" "$out/share/scrcpy/scrcpy-server"
+          wrapProgram "$out/bin/scrcpy" --prefix PATH : "${final.android-tools}/bin"
+        '';
+      });
+    })
   ];
 
   imports = [
@@ -377,6 +401,7 @@ in
     spotify
     neovide
     tuigreet
+    scrcpy
   ];
 
   fonts = {
