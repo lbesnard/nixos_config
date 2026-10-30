@@ -1,111 +1,113 @@
-<div align="center">
+# nixos_config
 
-## ZaneyOS 🟰 Best ❄️ NixOS Configs
+My NixOS + Home Manager setup for the laptop **`loz_dell_nixos`** (user `lbesnard`).
+It started as a copy of [ZaneyOS](https://gitlab.com/Zaney/zaneyos) (~v2.3, Feb 2025) and
+has since diverged: it no longer tracks upstream, and it is on **NixOS 25.11** (stable) with a
+few packages pulled from `nixos-unstable`.
 
-ZaneyOS is a simple way of reproducing my configuration on any NixOS system. This includes the wallpaper, scripts, applications, config files, and more.
+## Daily commands
 
-<img align="center" width="80%" src="https://gitlab.com/Zaney/zaneyos/-/raw/main/config/demo.png" />    
+| Alias | What it does |
+|-------|--------------|
+| `fr`  | **f**lake **r**ebuild: apply this repo to the machine (`nh os switch ...`) |
+| `fu`  | **f**lake **u**pdate: same, but first updates `flake.lock` (newer packages) |
+| `ncg` | **c**lean **g**arbage: delete old generations and free disk space |
 
-**Inspiration for the Waybar config [here](https://github.com/justinlime/dotfiles).**
+They are defined in `hosts/loz_dell_nixos/home.nix` (the `.alias.nixos` file) and rely on `nh`.
+Typical workflow: edit a file, run `fr`, and if it breaks, reboot and pick the previous generation in the boot menu.
 
-</div>
+Without the aliases:
 
-> **This project has a [Wiki](https://zaney.org/wiki/zaneyos-2.3/). Find out how to use ZaneyOS here!**
-> **I have put a lot of effort into the [documentation](https://zaney.org/wiki/zaneyos-2.3/) so it should be accurate. However, please if you notice that something is wrong with it create an issue or reach out to me on Discord.**
-
-#### 🍖 Requirements
-- You must be running on NixOS.
-- The zaneyos folder (this repo) is expected to be in your home directory.
-- Must have installed using GPT & UEFI. Systemd-boot is what is supported, for GRUB you will have to brave the internet for a how-to. ☺️
-- Manually editing your host specific files. The host is the specific computer your installing on.
-
-#### 🎹 Pipewire, Spotify, & Notification Menu Controls
-- We are using the latest and greatest audio solution for Linux. If you like listening to music Spotify comes pre-installed out of the box. Not to mention you will have media and volume controls in the notification center available in the top bar.
-
-#### 🏇 Optimized Workflow, tmpfs For Speed, & Simple Yet Elegant Neovim
-- Using scratchpads with Hyprland for increased functionality and effeciency.
-- A tmpfs for the /tmp directory is created improving rebuild time and reducing strain on hdd/ssd.
-- No massive Neovim project here. This is my simple, easy to understand, yet incredible Neovim setup. You can grep recursively through entire folders and find specific files without ever leaving the text editor!
-
-#### 🖥️ Multi Host & User Configuration
-- You can now define separate settings for different host machines and users!
-- Easily specify extra packages for your users in the users.nix file.
-- Easy to understand file structure and simple, but encompassing, configuratiion.
-
-#### 👼 An Incredible Community Focused On Support
-- The entire idea of ZaneyOS is to make NixOS an approachable space that is actually a great community that you want to be in.
-- Many people who are patient and happy to spend their free time helping you are running ZaneyOS. Feel free to reach out on the Discord for any help with anything.
-
-<div align="center">
-
-Please do yourself a favor and [read the wiki](https://zaney.org/wiki/zaneyos-2.3/).
-
-</div>
-
-#### 📦 How To Install Packages?
-- You can search the [Nix Packages](https://search.nixos.org/packages?) & [Options](https://search.nixos.org/options?) pages for what a package may be named or if it has options available that take care of configuration hurdles you may face.
-- To add a package there are the sections for it in config.nix and users.nix in your host folder. One is for programs available system wide and the other for your users environment only.
-
-#### 🙋 Having Issues / Questions?
-- Please feel free to raise an issue on the repo, please label a feature request with the title beginning with [feature request], thank you!
-- Contact me on [Discord](https://discord.gg/2cRdBs8) as well, for a potentially faster response.
-
-### ⬇️ Install
-
-#### 📜 Script:
-
-This is the easiest and recommended way of starting out. The script is not meant to allow you to change every option that you can in the flake or help you install extra packages. It is simply here so you can get my configuration installed with as little chances of breakages and then fiddle to your hearts content!
-
-Simply copy this and run it:
-
-```
-nix-shell -p git curl
+```sh
+sudo nixos-rebuild switch --flake ~/nixos_config#loz_dell_nixos   # apply
+nixos-rebuild build --flake .#loz_dell_nixos                      # test-build only, changes nothing
+nix flake update                                                  # bump flake.lock
 ```
 
-Then:
+## Crash course: Nix, flakes, Home Manager
+
+- **NixOS**: the whole system (packages, services, users, drivers) is described in `.nix` files.
+  You change the files and rebuild; you never `apt install` things by hand.
+  Every rebuild creates a **generation**, so you can always roll back.
+- **Nix language**: `.nix` files are mostly attribute sets (`{ name = value; }`) and functions
+  (`{ pkgs, ... }: { ... }`). A file is usually a *module* that sets options.
+  Search for packages at <https://search.nixos.org/packages> and for options at
+  <https://search.nixos.org/options>.
+- **Flake** (`flake.nix`): the entry point. It lists the **inputs** (where nixpkgs, Home Manager,
+  Stylix, agenix come from) and the **outputs** (here, one system called `loz_dell_nixos`).
+  `flake.lock` pins the exact version of every input so builds are reproducible. Updating the
+  lock (`fu` / `nix flake update`) is how you get newer software.
+- **Home Manager**: does the same job as NixOS but for the *user* (`~/.config/...`, shell, git,
+  Hyprland, per-user packages). Here it is built into the system rebuild, so one `fr` applies both.
+- **Two kinds of files**: *system* settings go in `config.nix` (and `users.nix`), *user* settings go in
+  `home.nix`. If an option isn't found, it is probably in the other one.
+- **`pkgs-unstable`**: a second package set (nixos-unstable) passed to modules for the few
+  packages that need to be newer, e.g. `pkgs-unstable.tailscale`.
+
+## How the flake wires things together
 
 ```
-sh <(curl -L https://gitlab.com/Zaney/zaneyos/-/raw/main/install-zaneyos.sh)
+flake.nix
+ ├─ nixosSystem "loz_dell_nixos"
+ │   ├─ agenix, stylix, home-manager modules
+ │   ├─ hosts/loz_dell_nixos/config.nix   <- system config (imports the files below)
+ │   └─ home-manager user lbesnard -> hosts/loz_dell_nixos/home.nix  <- user config
 ```
 
-#### 🦽 Manual:
+The host name and username are set at the top of `flake.nix` (`host`, `username`) and passed to
+every module, so files can use `${host}` and `${username}`.
 
-Run this command to ensure Git & Vim are installed:
+## Layout
 
-```
-nix-shell -p git vim
-```
+| Path | Purpose |
+|------|---------|
+| `flake.nix`, `flake.lock` | Inputs, the one system definition, pinned versions |
+| `hosts/loz_dell_nixos/` | **The active host.** `config.nix` (system), `home.nix` (user), `users.nix` (user packages/groups), `hardware.nix` (auto-generated disks/CPU), `variables.nix` (git identity, browser, terminal, keyboard layouts) |
+| `hosts/loz_dell_nixos/*.nix` | Self-contained feature modules: `tailscale`, `kanata` (Space+Up/Down = PgUp/PgDn), `switch-frame-tap` (see its `.md`), `joplin`, `task-tui`, `zoomus` (currently disabled) |
+| `hosts/default/` | Leftover ZaneyOS template; **not used** by the build |
+| `modules/` | Reusable system modules: GPU drivers (amd/intel/nvidia/prime), kernel patches, VM guest services, hardware clock. `apple-silicon-support` and `firmware` are for Asahi Macs and are not used by the Dell |
+| `config/` | Program configs imported by `home.nix`: `hyprland.nix`, `waybar.nix`, `rofi/`, `swaync.nix`, `wlogout`, `zsh.nix`, `tmux.nix`, `neovim.nix` (+ `lazyvim/`), `keepmenu`, `ssh_clients.nix`, `fastfetch`, `wallpapers/` |
+| `scripts/` | Small helper scripts packaged as Nix (wallpaper setter, screenshots, rofi launcher, keybinding viewer, ...). Added to the user's packages in `home.nix` |
+| `secrets/` | Encrypted secrets (agenix `.age` files) and who can decrypt them |
 
-Clone this repo & enter it:
+## Dotfiles
 
-```
-git clone https://gitlab.com/zaney/zaneyos.git
-cd zaneyos
-```
+Most dotfiles are **not** managed by Nix. They live in separate repos cloned at
+`~/github_repos/dotfiles` (public) and `~/github_repos/dotfiles_private`, and are symlinked with
+[dotbot](https://github.com/anishathalye/dotbot), the same way on every machine.
+`config/dotfiles.nix` runs dotbot on each rebuild (a Home Manager *activation script*) and skips the
+files NixOS owns itself: `~/.bashrc`, `~/.config/gh`, `~/.aws`.
 
-- *You should stay in this folder for the rest of the install*
+Rule of thumb: Hyprland, Waybar, rofi, zsh, tmux and neovim are configured here via Nix (`config/`);
+other apps (e.g. alacritty) come from the dotfiles repo.
 
-Create the host folder for your machine(s)
+## Secrets (agenix)
 
-```
-cp -r hosts/default hosts/<your-desired-hostname>
-```
+Secrets (AWS credentials, Tailscale token) are stored encrypted in `secrets/*.age` and decrypted at
+boot with the machine's SSH key. Which keys can read each secret is listed in `secrets/secrets.nix`.
 
-**🪧🪧🪧 Edit `hosts/<your-desired-hostname>/config.nix` and `hosts/<your-desired-hostname>/variables.nix` 🪧🪧🪧**
-
-Generate your hardware.nix like so:
-
-```
-nixos-generate-config --show-hardware-config > hosts/<your-desired-hostname>/hardware.nix
-```
-
-Run this to enable flakes and install the flake replacing hostname with whatever you put as the hostname:
-
-```
-NIX_CONFIG="experimental-features = nix-command flakes" 
-sudo nixos-rebuild switch --flake .#hostname
+```sh
+cd secrets && agenix -e aws_cred.age   # edit a secret
 ```
 
-Now when you want to rebuild the configuration you have access to an alias called flake-rebuild that will rebuild the flake!
+## Hyprland
 
-Hope you enjoy!
+- Main modifier is `SUPER`. Settings and binds are in `config/hyprland.nix`.
+- `SUPER+SHIFT+R` toggles keyboard layout (`us,fr,no`, see `variables.nix`).
+- Clicking the bindings icon (󱕴) in Waybar shows the full list of keybindings (`list-hypr-bindings`).
+- Wallpapers are in `config/wallpapers/` (trimmed from upstream) and set by `swww`.
+
+## Common tasks
+
+- **Add a system package**: `environment.systemPackages` in `hosts/loz_dell_nixos/config.nix`, then `fr`.
+- **Add a user package**: `users.nix` or `home.packages` in `home.nix`, then `fr`.
+- **Add a new feature file**: create `hosts/loz_dell_nixos/foo.nix`, add `./foo.nix` to `imports` in `config.nix`.
+- **Update everything**: `fu`.
+- **Something broke after an update**: reboot, choose the previous generation in the boot menu, then `git checkout flake.lock`.
+- **Disk full**: `ncg`.
+
+## Relationship to ZaneyOS
+
+Upstream is far ahead (v2.6.x: Noctalia shell, `zcli`, nixvim, multi-profile flake) and the layouts no
+longer match, so merging is impractical. Treat it as a reference only: check its `CHANGELOG.md` when
+something breaks after an update, and copy individual fixes by hand.

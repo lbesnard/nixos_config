@@ -278,7 +278,7 @@ in
     inxi
     playerctl
     nh
-    nixfmt-rfc-style
+    nixfmt
     discord
     libvirt
     swww
