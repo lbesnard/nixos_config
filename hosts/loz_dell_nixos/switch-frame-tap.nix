@@ -129,15 +129,14 @@ in
   # Switch over USB without root.
   services.udev.packages = [ switch-frame-tap ];
 
-  # The console can reconnect as a "new" USB device (e.g. after a sysmodule
-  # update reboots it) before the already-running udevd has re-evaluated the
-  # uaccess rule for it, leaving the device node without an ACL for the
-  # logged-in user. Re-running these on every activation (boot and
-  # `nixos-rebuild switch`) is the same fix as the manual
-  # `sudo udevadm control --reload-rules && sudo udevadm trigger` workaround,
-  # applied automatically instead.
-  system.activationScripts.switch-frame-tap-udev = ''
-    ${pkgs.systemd}/bin/udevadm control --reload-rules
-    ${pkgs.systemd}/bin/udevadm trigger --action=add --subsystem-match=usb
+  # The packaged rule only tags the device "uaccess", but that tag is added by
+  # a 99- rule, after udev's 73-seat-late.rules has already handled uaccess
+  # for the event. The ACL for the logged-in user therefore only appeared
+  # after a manual `udevadm control --reload-rules && udevadm trigger`.
+  # An activation script can't replace that: it runs before udevd starts.
+  # Give the "users" group access directly instead, so it works on every
+  # boot and replug without any trigger.
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="5f1e", GROUP="users", MODE="0660"
   '';
 }

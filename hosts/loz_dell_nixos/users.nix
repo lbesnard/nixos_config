@@ -1,6 +1,7 @@
 {
   pkgs,
   pkgs-unstable,
+  pkgs-darktable,
   username,
   ...
 }:
@@ -160,7 +161,7 @@ in
         cheese
         imagemagick
         krita
-        (pkgs-unstable.darktable.override { withAi = true; })
+        (pkgs-darktable.darktable.override { withAi = true; })
         enblend-enfuse  # photos staking
         hdrmerge
         rawtherapee

@@ -4,6 +4,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # Pinned to a fixed commit on purpose: darktable with AI (withAi) is not in
+    # the binary cache and takes ~1h to compile, so it must not move on every
+    # `fu`. Bump the commit by hand when you want a newer darktable.
+    nixpkgs-darktable.url = "github:nixos/nixpkgs/31ecbaca1bdefa45dffc409f0250bd8039ea0010";
     # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
     home-manager.url = "github:nix-community/home-manager/release-25.11";
@@ -40,6 +44,7 @@
             inherit username;
             inherit host;
             pkgs-unstable = import inputs.nixpkgs-unstable { inherit system; config.allowUnfree = true; };
+            pkgs-darktable = import inputs.nixpkgs-darktable { inherit system; config.allowUnfree = true; };
           };
           modules = [
             agenix.nixosModules.default

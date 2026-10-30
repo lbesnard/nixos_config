@@ -106,6 +106,39 @@ cd secrets && agenix -e aws_cred.age   # edit a secret
 - **Something broke after an update**: reboot, choose the previous generation in the boot menu, then `git checkout flake.lock`.
 - **Disk full**: `ncg`.
 
+## Updating darktable (pinned on purpose)
+
+darktable is built with AI support (`withAi = true`, `hosts/loz_dell_nixos/users.nix`). That variant is
+**not in the binary cache**, so it compiles locally (~1 h). To keep `fu` fast, it comes from its own
+flake input, `nixpkgs-darktable` in `flake.nix`, pinned to a fixed nixpkgs **commit hash**. `fu` /
+`nix flake update` never changes it. Other unstable packages (digikam, tailscale, ...) use
+`nixpkgs-unstable` and update normally.
+
+To upgrade darktable manually:
+
+1. See which version is in nixpkgs-unstable now, and get the latest commit hash:
+   ```sh
+   git ls-remote https://github.com/NixOS/nixpkgs nixos-unstable      # first column = commit hash
+   nix eval --raw github:nixos/nixpkgs/<hash>#darktable.version        # check the darktable version at that commit
+   ```
+   Pick a commit whose darktable version is the one you want (`nixos-unstable` only moves after its tests
+   pass, so its latest commit is a safe choice). The version currently pinned is
+   `nix eval --raw github:nixos/nixpkgs/31ecbaca1bdefa45dffc409f0250bd8039ea0010#darktable.version`
+   (use the hash currently in `flake.nix`).
+2. Put the hash in the URL of `nixpkgs-darktable` in `flake.nix`:
+   ```nix
+   nixpkgs-darktable.url = "github:nixos/nixpkgs/<new-hash>";
+   ```
+3. Refresh the lock for that input only, then rebuild (expect ~1 h of compiling once):
+   ```sh
+   nix flake lock
+   fr
+   ```
+4. If it fails, `git checkout flake.nix flake.lock` goes back to the previous pin (already built, so instant).
+
+Don't want AI? Use `pkgs-unstable.darktable` in `users.nix` (cached, no compile) and delete the
+`nixpkgs-darktable` input, the `pkgs-darktable` line in `flake.nix` and the `pkgs-darktable` argument in `users.nix`.
+
 ## Relationship to ZaneyOS
 
 Upstream is far ahead (v2.6.x: Noctalia shell, `zcli`, nixvim, multi-profile flake) and the layouts no
