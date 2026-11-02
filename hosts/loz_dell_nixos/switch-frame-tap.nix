@@ -38,11 +38,11 @@ let
     }:
     stdenv.mkDerivation rec {
       pname = "switch-frame-tap";
-      version = "0.7.19";
+      version = "0.7.20";
 
       src = fetchzip {
         url = "https://github.com/TomasUribe/switch-frame-tap/releases/download/v${version}/switch-frame-tap-${version}-linux.tar.gz";
-        hash = "sha256-qWSriM+Oil1ZBiThRiMKZeTKgiQwswIq2yDIYBb8LSY=";
+        hash = "sha256-OmFQ3MP5XRBbhtZcbrI03oY7HW6M+oapWSIgu1MOG8c=";
       };
 
       nativeBuildInputs = [
@@ -90,7 +90,7 @@ let
 
         install -Dm755 switch-frame-tap-viewer $out/bin/switch-frame-tap-viewer
         install -Dm644 switch-frame-tap.svg $out/share/icons/hicolor/scalable/apps/switch-frame-tap.svg
-        install -Dm644 99-switch-frame-tap.rules $out/lib/udev/rules.d/99-switch-frame-tap.rules
+        install -Dm644 70-switch-frame-tap.rules $out/lib/udev/rules.d/70-switch-frame-tap.rules
         install -Dm644 licenses/*.txt -t $out/share/licenses/switch-frame-tap
 
         wrapProgram $out/bin/switch-frame-tap-viewer \

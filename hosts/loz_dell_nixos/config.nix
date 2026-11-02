@@ -477,7 +477,8 @@ in
         # pkgs.hplipWithPlugin
       ];
     };
-    gnome.gnome-keyring.enable = false;
+    gnome.gnome-keyring.enable = true;
+    gnome.gcr-ssh-agent.enable = false; # SSH is handled by gpg-agent
     avahi = {
       enable = true;
       nssmdns4 = true;
@@ -617,6 +618,7 @@ in
   # missing from default zaneyos config
   # https://0xda.de/blog/2024/07/framework-and-nixos-locking-customization/
   security.pam.services.hyprlock = { };
+  security.pam.services.greetd.enableGnomeKeyring = true;
 
   # Optimization settings and garbage collection automation
   nix = {
