@@ -206,6 +206,8 @@ in
 
         claude-code
         
+        ansible
+
         # Communication
         hugo # blog
         slack

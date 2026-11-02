@@ -304,7 +304,7 @@ in
     mtr.enable = true;
     gnupg.agent = {
       enable = true;
-      enableSSHSupport = true;
+      enableSSHSupport = false; # SSH is handled by gcr-ssh-agent (gnome-keyring)
     };
     virt-manager.enable = true;
     steam = {
@@ -478,7 +478,7 @@ in
       ];
     };
     gnome.gnome-keyring.enable = true;
-    gnome.gcr-ssh-agent.enable = false; # SSH is handled by gpg-agent
+    gnome.gcr-ssh-agent.enable = true;
     avahi = {
       enable = true;
       nssmdns4 = true;
