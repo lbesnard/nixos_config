@@ -38,11 +38,11 @@ let
     }:
     stdenv.mkDerivation rec {
       pname = "switch-frame-tap";
-      version = "0.7.20";
+      version = "0.7.21.1";
 
       src = fetchzip {
         url = "https://github.com/TomasUribe/switch-frame-tap/releases/download/v${version}/switch-frame-tap-${version}-linux.tar.gz";
-        hash = "sha256-OmFQ3MP5XRBbhtZcbrI03oY7HW6M+oapWSIgu1MOG8c=";
+        hash = "sha256-MKWnuxHQNqttVy6OIPggV4kn6iDiFF4hevQqR8Uvp3g=";
       };
 
       nativeBuildInputs = [

@@ -208,6 +208,10 @@ in
         
         ansible
 
+        # for dotfiles repo
+        age
+        pre-commit
+
         # Communication
         hugo # blog
         slack
