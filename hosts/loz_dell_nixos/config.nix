@@ -9,6 +9,9 @@
 }:
 let
   inherit (import ./variables.nix) keyboardLayout consoleKeyMap;
+  appimage-run-with-gl = pkgs.appimage-run.override {
+    extraPkgs = pkgs: [ pkgs.mesa ];
+  };
 in
 {
   # Override ipu6-camera-hal to build with ipu6epmtl platform plugin.
@@ -99,7 +102,7 @@ in
     # Appimage Support
     binfmt.registrations.appimage = {
       wrapInterpreterInShell = false;
-      interpreter = "${pkgs.appimage-run}/bin/appimage-run";
+      interpreter = "${appimage-run-with-gl}/bin/appimage-run";
       recognitionType = "magic";
       offset = 0;
       mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
@@ -378,7 +381,7 @@ in
     brightnessctl
     virt-viewer
     swappy
-    appimage-run
+    appimage-run-with-gl
     networkmanagerapplet
     yad
     inxi
@@ -420,6 +423,12 @@ in
     ZANEYOS_VERSION = "2.3";
     ZANEYOS = "true";
   };
+
+  # /usr/lib64 only exists inside appimage-run's bwrap FHS environment.
+  # The host linker ignores it; inside bwrap it makes libOpenGL.so.0 visible.
+  programs.zsh.shellInit = ''
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib64"
+  '';
 
   # Extra Portal Configuration
   xdg.portal = {
