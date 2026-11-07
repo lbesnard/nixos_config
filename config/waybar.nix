@@ -27,6 +27,8 @@ with lib;
           "pulseaudio"
           "cpu"
           "memory"
+          "network"
+          "disk"
           "idle_inhibitor"
           "hyprland/language"
         ];
@@ -136,11 +138,13 @@ with lib;
           tooltip = true;
         };
         "disk" = {
-          format = " {free}";
+          interval = 30;
+          format = " {percentage_used}%";
           tooltip = true;
+          tooltip-format = "{used} used out of {total} ({percentage_used}%)";
         };
         "network" = {
-          interval = 1;
+          interval = 2;
           format-alt = "{ifname}: {ipaddr}/{cidr}";
           format-icons = [
             "󰤯"
@@ -149,10 +153,11 @@ with lib;
             "󰤥"
             "󰤨"
           ];
-          format-ethernet = " {bandwidthDownOctets}";
-          format-wifi = "{icon} {signalStrength}%";
+          format-ethernet = "󰁑 {bandwidthDownBytes}  {bandwidthUpBytes}";
+          format-wifi = "{icon} {bandwidthDownBytes}  {bandwidthUpBytes}";
           format-disconnected = "󰤮";
-          tooltip = false;
+          tooltip = true;
+          tooltip-format = "{ifname}: {ipaddr}/{cidr}";
         };
         "tray" = {
           spacing = 12;
@@ -303,7 +308,7 @@ with lib;
         tooltip label {
           color: #${config.lib.stylix.colors.base08};
         }
-        #window, #pulseaudio, #cpu, #memory, #idle_inhibitor, #language {
+        #window, #pulseaudio, #cpu, #memory, #network, #disk, #idle_inhibitor, #language {
           font-weight: bold;
           margin: 4px 0px;
           margin-left: 7px;
@@ -320,7 +325,7 @@ with lib;
           padding: 0px 30px 0px 15px;
           border-radius: 0px 0px 40px 0px;
         }
-        #custom-hyprbindings, #network, #battery,
+        #custom-hyprbindings, #battery,
         #custom-notification, #tray, #custom-exit {
           font-weight: bold;
           background: #${config.lib.stylix.colors.base0F};
