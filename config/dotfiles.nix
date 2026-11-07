@@ -19,9 +19,12 @@ in
     if [ -L "$HOME/.bashrc" ]; then
       rm -f "$HOME/.bashrc"
     fi
-    # ~/.config/gh: dotbot manages this dir, but programs.gh owns it on NixOS
-    rm -f "$HOME/.config/gh/config.yml"
-    rm -f "$HOME/.config/gh/config.yml.backup"
+    # ~/.config/gh: dotbot may symlink this dir to the dotfiles repo.
+    # Remove the directory symlink (not files inside it) so programs.gh can
+    # create a real directory — otherwise writes go into the dotfiles repo.
+    if [ -L "$HOME/.config/gh" ]; then
+      rm -f "$HOME/.config/gh"
+    fi
     # ~/.aws: agenix manages credentials; remove dotbot symlink so agenix file is used
     if [ -L "$HOME/.aws" ]; then
       rm -f "$HOME/.aws"
