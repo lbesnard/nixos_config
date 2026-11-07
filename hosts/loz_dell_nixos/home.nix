@@ -123,6 +123,10 @@ in
   ];
 
   services = {
+    nextcloud-client = {
+      enable = true;
+      startInBackground = true;
+    };
     hypridle = {
       enable = true;
       systemdTarget = "hyprland-session.target";
