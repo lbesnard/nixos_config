@@ -5,12 +5,12 @@
 
 python3Packages.buildPythonPackage {
   pname = "task-tui";
-  version = "1.6.0";
+  version = "2.4.0";
   format = "wheel";
 
   src = fetchurl {
-    url = "https://github.com/lbesnard/task-tui/releases/download/v1.6.0/task_tui-1.6.0-py3-none-any.whl";
-    hash = "sha256:af1fc3675f3918112744256dd6695df59a43f23762cf6fe3145db241448fb363";
+    url = "https://github.com/lbesnard/task-tui/releases/download/v2.4.0/task_tui-2.4.0-py3-none-any.whl";
+    hash = "sha256-BcXIUbdpKMq3/fql4857S19OUdXttxwK0n2fNg8S+60=";
   };
 
   propagatedBuildInputs = with python3Packages; [ textual ];

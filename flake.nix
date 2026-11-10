@@ -2,7 +2,7 @@
   description = "ZaneyOS";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     # Pinned to a fixed commit on purpose: darktable with AI (withAi) is not in
     # the binary cache and takes ~1h to compile, so it must not move on every
@@ -10,13 +10,13 @@
     nixpkgs-darktable.url = "github:nixos/nixpkgs/31ecbaca1bdefa45dffc409f0250bd8039ea0010";
     # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
+    home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # nixpkgs-camera-working.url = "github:nixos/nixpkgs?rev=5633bcff0c6162b9e4b5f1264264611e950c8ec7";
 
     agenix.url = "github:ryantm/agenix";
 
-    stylix.url = "github:danth/stylix/release-25.11";
+    stylix.url = "github:danth/stylix/release-26.05";
     fine-cmdline = {
       url = "github:VonHeikemen/fine-cmdline.nvim";
       flake = false;

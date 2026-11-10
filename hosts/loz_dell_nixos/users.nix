@@ -69,7 +69,6 @@ in
         # github
         git
         gh
-        gh-copilot
         gh-dash
         lazygit
         zsh-forgit
@@ -216,7 +215,6 @@ in
         hugo # blog
         slack
         (pkgs-unstable.zoom-us)
-        wasistlos
         joplin # manually built
         # joplin-desktop
         # logseq  ## issue with non free package
