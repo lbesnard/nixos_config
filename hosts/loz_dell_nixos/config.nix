@@ -318,7 +318,7 @@ in
     };
     thunar = {
       enable = true;
-      plugins = with pkgs.xfce; [
+      plugins = with pkgs; [
         thunar-archive-plugin
         thunar-volman
       ];
@@ -391,7 +391,7 @@ in
     nixfmt
     discord
     libvirt
-    swww
+    awww
     grim
     slurp
     file-roller

@@ -34,15 +34,21 @@ let
       libdrm,
       libva,
       dbus,
-      xorg,
+      libx11,
+      libxrandr,
+      libxcursor,
+      libxi,
+      libxext,
+      libxfixes,
+      libxscrnsaver,
     }:
     stdenv.mkDerivation rec {
       pname = "switch-frame-tap";
-      version = "0.7.21.1";
+      version = "0.7.22";
 
       src = fetchzip {
         url = "https://github.com/TomasUribe/switch-frame-tap/releases/download/v${version}/switch-frame-tap-${version}-linux.tar.gz";
-        hash = "sha256-MKWnuxHQNqttVy6OIPggV4kn6iDiFF4hevQqR8Uvp3g=";
+        hash = "sha256-7TZu9ALoDlurDZ7wOtL/JdXTaO+0u5SOk2XDTtOvCTo=";
       };
 
       nativeBuildInputs = [
@@ -68,13 +74,13 @@ let
         libdrm
         libva
         dbus
-        xorg.libX11
-        xorg.libXrandr
-        xorg.libXcursor
-        xorg.libXi
-        xorg.libXext
-        xorg.libXfixes
-        xorg.libXScrnSaver
+        libx11
+        libxrandr
+        libxcursor
+        libxi
+        libxext
+        libxfixes
+        libxscrnsaver
       ];
 
       buildInputs = [

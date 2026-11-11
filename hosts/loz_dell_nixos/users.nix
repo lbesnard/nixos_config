@@ -142,7 +142,7 @@ in
         # netcdf
         udunits
 
-        wineWowPackages.stagingFull
+        wineWow64Packages.stagingFull
 
         mariadb
 

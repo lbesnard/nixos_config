@@ -281,7 +281,7 @@ in
     nixfmt
     discord
     libvirt
-    swww
+    awww
     grim
     slurp
     file-roller
