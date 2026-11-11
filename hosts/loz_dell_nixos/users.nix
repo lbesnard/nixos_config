@@ -219,7 +219,7 @@ in
         # joplin-desktop
         # logseq  ## issue with non free package
         appflowy
-        nextcloud-client
+        pkgs-unstable.nextcloud-client
         firefox
         # element-desktop # replaced by element installed via brave
 

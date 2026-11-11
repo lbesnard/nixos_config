@@ -35,6 +35,7 @@ with lib;
       hl.env("QT_AUTO_SCREEN_SCALE_FACTOR", "1")
       hl.env("SDL_VIDEODRIVER", "x11")
       hl.env("MOZ_ENABLE_WAYLAND", "1")
+      hl.env("NEXTCLOUD_QT_PLATFORM_OVERRIDE", "wayland")
 
       -- Autostart
       hl.on("hyprland.start", function()
