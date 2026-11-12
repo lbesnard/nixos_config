@@ -751,6 +751,7 @@ in
   programs.nix-ld.libraries = with pkgs; [
     micromamba
     poetry
+    stdenv.cc.cc.lib
   ];
   hardware.sane = {
     enable = true;

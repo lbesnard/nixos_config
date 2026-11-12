@@ -1,48 +1,42 @@
 { config, pkgs, ... }:
 {
-  programs = {
-    neovim = {
-      enable = true;
-      withPython3 = true;
-      withNodeJs = true;
-      withRuby = false;
-      defaultEditor = true;
-      viAlias = true;
-      vimAlias = true;
-      vimdiffAlias = true;
-      extraPackages = with pkgs; [
-        gcc
-        gnumake
-        ruby
-        cargo
+  # ~/.config/nvim is managed by dotbot (symlinked from ~/github_repo/dotfiles/nvim/,
+  # which bootstraps LazyVim). Home Manager's `programs.neovim` module writes its own
+  # generated init.lua through that symlink regardless of config, clobbering the real
+  # file in the dotfiles repo -- so neovim is installed as a plain package here instead
+  # and left entirely unmanaged/unconfigured by Home Manager.
+  home.packages = with pkgs; [
+    neovim
 
-        tree-sitter
+    gcc
+    gnumake
+    ruby
+    cargo
 
-        #nix
-        deadnix
-        nil
-        nixd
-        statix
-        alejandra
+    tree-sitter
 
-        #lua
-        luajitPackages.luarocks
-        luajitPackages.luacheck
-        luajitPackages.lua-lsp
-        lua-language-server
+    #nix
+    deadnix
+    nil
+    nixd
+    statix
+    alejandra
 
-        typos-lsp
+    #lua
+    luajitPackages.luarocks
+    luajitPackages.luacheck
+    luajitPackages.lua-lsp
+    lua-language-server
 
-        gopls
-        xclip
-        wl-clipboard
-        rust-analyzer
-        #nodePackages.bash-language-server
-        yaml-language-server
-        pyright
-        marksman
-      ];
-    };
-  };
-  # ~/.config/nvim is managed by dotbot (symlinked from ~/github_repos/dotfiles/nvim/)
+    typos-lsp
+
+    gopls
+    xclip
+    wl-clipboard
+    rust-analyzer
+    #nodePackages.bash-language-server
+    yaml-language-server
+    pyright
+    marksman
+  ];
 }
