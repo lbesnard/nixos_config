@@ -1,6 +1,8 @@
 {
   config,
   pkgs,
+  pkgs-unstable,
+  pkgs-darktable,
   lib,
   host,
   username,
@@ -12,6 +14,8 @@ let
   appimage-run-with-gl = pkgs.appimage-run.override {
     extraPkgs = pkgs: [ pkgs.mesa ];
   };
+  joplin = pkgs.callPackage ./joplin.nix { };
+  task-tui = pkgs.callPackage ./task-tui.nix { };
 in
 {
   # Override ipu6-camera-hal to build with ipu6epmtl platform plugin.
@@ -344,67 +348,269 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-    # awscli2
+    x2goclient
+
+    # Development & Programming
+    gcc
+    openjdk
+    gem
+    lua
+    cargo
+    ruby
+    gnumake
+    tree-sitter
+    ghostscript
+    neovim
+    neovide
+    luajitPackages.luarocks
+    chafa
+    micromamba
+    poetry
+    pkgs-unstable.uv
+    nodejs
+    perl
+    python3
+    pyenv
+    bat
+    delta
+    diff-so-fancy
+    fd
+    fzf
+    jq
+    yq
+    sad
+    silver-searcher
+    ripgrep
+    pkg-config
+    meson
+    ninja
+    nh
+    nixfmt
+
+    # github
+    git
+    gh
+    gh-dash
+    lazygit
+    zsh-forgit
+
+    # System Utilities
     vim
     wget
     killall
-    docker-compose
     eza
-    git
+    lsd
+    bash-completion
+    cockpit
+    zsh
+    zoxide
+    autojump
+    fasd
+    btop
+    htop
+    lnav
+    dfc
+    duf
+    lsof
+    ethtool
+    exiftool
+    zip
+    unzip
+    p7zip
+    unrar
+    usbutils
+    udiskie
+    caligula # create usb bootable image
+    rpi-imager
+    usbimager
+    rclone
+    gparted
+    lm_sensors
+    lshw
+    pciutils
+    kdePackages.plasma-thunderbolt # https://nixos.wiki/wiki/Thunderbolt
+    appimage-run-with-gl
     cmatrix
     lolcat
-    htop
-    brave
-    libvirt
-    lxqt.lxqt-policykit
-    lm_sensors
-    unzip
-    unrar
-    libnotify
-    v4l-utils
-    ydotool
-    duf
-    ncdu
-    kdePackages.plasma-thunderbolt # https://nixos.wiki/wiki/Thunderbolt
-    wl-clipboard
-    pciutils
-    ffmpeg
-    socat
     cowsay
-    ripgrep
-    lshw
-    bat
-    pkg-config
-    meson
-    hyprpicker
-    ninja
-    brightnessctl
+
+    # Networking Tools
+    ungoogled-chromium
+    brave
+    dig
+    dnsutils
+    wireshark
+    termshark
+    ifwifi # nmcli
+    iw
+    netscanner
+    tcpdump
+    croc
+    iperf3
+    awscli2
+    curl
+    httpie
+    pkgs-unstable.tailscale
+    wireguard-tools
+    openvpn
+    act
+    aria2
+    nmap
+    filezilla
+    transmission_4-qt
+    socat
+
+    # File & Process Management
+    direnv
+    nix-direnv
+    nnn
+    ranger
+    tree
+    tmux
+    tig
+    viu
+    yazi
+    ueberzug
+    ueberzugpp
+    ncdu
+    gnome-disk-utility
+    android-tools
+    scrcpy
+    rmlint
+    dysk
+
+    # netcdf
+    udunits
+    netcdf
+    nco
+    netcdfcxx4
+    ncview
+
+    wineWow64Packages.stagingFull
+
+    mariadb
+    pgcli
+    sqlite
+    mycli
+
+    # Multimedia & Graphics
+    rmpc # mpd tui client
+    ffmpeg
+    vlc
+    mpv
+    imv
+    pkgs-unstable.digikam
+    shotcut
+    audacity
+    inkscape-with-extensions
+    kazam
+    obs-studio
+    conjure
+    cheese
+    imagemagick
+    krita
+    gimp
+    (pkgs-darktable.darktable.override { withAi = true; })
+    enblend-enfuse # photos staking
+    hdrmerge
+    rawtherapee
+    hugin # panorama
+    evince
+    handbrake
+    yt-dlp
+    qimgv
+    pavucontrol
+    v4l-utils
+    playerctl
+    spotify
+
+    # Office & Documentation
+    libreoffice-qt6-fresh
+    tldr
+    cheat
+    glow
+    koreader
+    calibre
+
+    # Security & Password Management
+    authenticator
+    keepassxc
+    pinentry-curses
+    ydotool
+    nssTools # certutil, for managing NSS cert DBs (e.g. Chromium's ~/.pki/nssdb)
+
+    # Virtualisation & Containers
+    virtualbox
+    virt-manager
     virt-viewer
-    swappy
-    appimage-run-with-gl
+    libvirt
+    libvirt-glib
+    qemu
+    docker_29
+    docker-compose
+
+    # Desktop & Window Management
+    alacritty
+    ghostty
+    wofi
+    dmenu
+    xdotool
+    keepmenu
+    wdisplays
+    lxqt.lxqt-policykit
+    libnotify
+    wl-clipboard
     networkmanagerapplet
     yad
     inxi
-    obs-studio
-    playerctl
-    nh
-    nixfmt
-    discord
-    libvirt
+    hyprpicker
+    brightnessctl
+    swappy
     awww
     grim
     slurp
     file-roller
     swaynotificationcenter
-    imv
-    mpv
-    gimp
-    pavucontrol
-    tree
-    spotify
-    neovide
     tuigreet
-    scrcpy
+    # nwg-displays  # has issues https://github.com/nwg-piotr/nwg-displays/issues/81
+
+    claude-code
+
+    ansible
+
+    # for dotfiles repo
+    age
+    pre-commit
+
+    # Communication
+    hugo # blog
+    slack
+    discord
+    (pkgs-unstable.zoom-us)
+    joplin # manually built
+    # joplin-desktop
+    # logseq  ## issue with non free package
+    appflowy
+    pkgs-unstable.nextcloud-client
+    firefox
+    # element-desktop # replaced by element installed via brave
+
+    anki-bin # flashcards
+
+    # task management
+    taskwarrior3
+    task-tui
+
+    # games
+    # emulationstation-de
+    (pkgs.retroarch.withCores (
+      cores: with cores; [
+        snes9x # SNES
+        nestopia # NES
+        mgba # GBA
+        mupen64plus # N64
+      ]
+    ))
   ];
 
   fonts = {
