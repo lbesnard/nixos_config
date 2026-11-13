@@ -164,13 +164,26 @@ with lib;
       hl.bind(mod .. " + SHIFT + F",      hl.dsp.window.float({ action = "toggle" }))
       hl.bind(mod .. " + SHIFT + C",      hl.dsp.exit())
 
-      -- Move windows in tiling
+      -- Move windows in tiling. Up/down fall back to toggling the dwindle
+      -- split orientation when there's no window in that direction to swap
+      -- with (e.g. two windows side-by-side becoming stacked).
+      local function move_or_toggle_split(direction)
+          return function()
+              local before = hl.get_active_window()
+              hl.dispatch(hl.dsp.window.move({ direction = direction }))
+              local after = hl.get_active_window()
+              if before and after and before.at[1] == after.at[1] and before.at[2] == after.at[2] then
+                  hl.dispatch(hl.dsp.layout("togglesplit"))
+              end
+          end
+      end
+
       hl.bind(mod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "l" }))
       hl.bind(mod .. " + SHIFT + right", hl.dsp.window.move({ direction = "r" }))
-      hl.bind(mod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "u" }))
-      hl.bind(mod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "d" }))
+      hl.bind(mod .. " + SHIFT + up",    move_or_toggle_split("u"))
+      hl.bind(mod .. " + SHIFT + down",  move_or_toggle_split("d"))
       hl.bind(mod .. " + SHIFT + H",     hl.dsp.window.move({ direction = "l" }))
-      hl.bind(mod .. " + SHIFT + J",     hl.dsp.window.move({ direction = "d" }))
+      hl.bind(mod .. " + SHIFT + J",     move_or_toggle_split("d"))
 
       -- Focus
       hl.bind(mod .. " + left",  hl.dsp.focus({ direction = "left" }))
