@@ -162,15 +162,15 @@ with lib;
       hl.bind(mod .. " + SHIFT + I",      hl.dsp.layout("togglesplit"))
       hl.bind(mod .. " + F",              hl.dsp.window.fullscreen())
       hl.bind(mod .. " + SHIFT + F",      hl.dsp.window.float({ action = "toggle" }))
-      hl.bind(mod .. " + SHIFT + C",      hl.dsp.exec_cmd("hyprctl dispatch exit"))
+      hl.bind(mod .. " + SHIFT + C",      hl.dsp.exit())
 
       -- Move windows in tiling
-      hl.bind(mod .. " + SHIFT + left",  hl.dsp.exec_cmd("hyprctl dispatch movewindow l"))
-      hl.bind(mod .. " + SHIFT + right", hl.dsp.exec_cmd("hyprctl dispatch movewindow r"))
-      hl.bind(mod .. " + SHIFT + up",    hl.dsp.exec_cmd("hyprctl dispatch movewindow u"))
-      hl.bind(mod .. " + SHIFT + down",  hl.dsp.exec_cmd("hyprctl dispatch movewindow d"))
-      hl.bind(mod .. " + SHIFT + H",     hl.dsp.exec_cmd("hyprctl dispatch movewindow l"))
-      hl.bind(mod .. " + SHIFT + J",     hl.dsp.exec_cmd("hyprctl dispatch movewindow d"))
+      hl.bind(mod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "l" }))
+      hl.bind(mod .. " + SHIFT + right", hl.dsp.window.move({ direction = "r" }))
+      hl.bind(mod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "u" }))
+      hl.bind(mod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "d" }))
+      hl.bind(mod .. " + SHIFT + H",     hl.dsp.window.move({ direction = "l" }))
+      hl.bind(mod .. " + SHIFT + J",     hl.dsp.window.move({ direction = "d" }))
 
       -- Focus
       hl.bind(mod .. " + left",  hl.dsp.focus({ direction = "left" }))
@@ -201,8 +201,8 @@ with lib;
       hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
       -- Alt+Tab
-      hl.bind("ALT + Tab", hl.dsp.exec_cmd("hyprctl dispatch cyclenext"))
-      hl.bind("ALT + Tab", hl.dsp.exec_cmd("hyprctl dispatch bringactivetotop"))
+      hl.bind("ALT + Tab", hl.dsp.window.cycle_next())
+      hl.bind("ALT + Tab", hl.dsp.window.bring_to_top())
 
       -- Audio / Media
       hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"))
