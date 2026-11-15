@@ -434,6 +434,8 @@ in
     lolcat
     cowsay
 
+    poppler-utils
+  
     # Networking Tools
     ungoogled-chromium
     brave
