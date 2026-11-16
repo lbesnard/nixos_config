@@ -630,6 +630,14 @@ in
   environment.variables = {
     ZANEYOS_VERSION = "2.3";
     ZANEYOS = "true";
+    # Force uv to always provision its own python-build-standalone interpreter
+    # instead of picking up the Nix system Python. The system Python's ELF
+    # interpreter already points at a Nix store glibc, which bypasses nix-ld's
+    # NIX_LD_LIBRARY_PATH interception (see programs.nix-ld.libraries below),
+    # so manylinux wheels like numpy/matplotlib fail to find libstdc++.so.6.
+    # A managed uv interpreter uses the generic /lib64/ld-linux-x86-64.so.2
+    # path that nix-ld does intercept, fixing this for every uv project.
+    UV_PYTHON_PREFERENCE = "only-managed";
   };
 
   # /usr/lib64 only exists inside appimage-run's bwrap FHS environment.
