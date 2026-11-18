@@ -16,6 +16,7 @@ let
   };
   joplin = pkgs.callPackage ./joplin.nix { };
   task-tui = pkgs.callPackage ./task-tui.nix { };
+  terminal-browser = pkgs.callPackage ./terminal-browser.nix { };
 in
 {
   # Override ipu6-camera-hal to build with ipu6epmtl platform plugin.
@@ -434,11 +435,12 @@ in
     lolcat
     cowsay
 
-    poppler-utils
-  
+    poppler-utils # pdf tools
+
     # Networking Tools
     ungoogled-chromium
     brave
+    terminal-browser
     dig
     dnsutils
     wireshark
@@ -471,7 +473,7 @@ in
     tmux
     tig
     viu
-    yazi
+    pkgs-unstable.yazi # nixpkgs-26.05's yazi is too old for current plugins (e.g. piper's @since gate)
     ueberzug
     ueberzugpp
     ncdu
@@ -630,6 +632,13 @@ in
   environment.variables = {
     ZANEYOS_VERSION = "2.3";
     ZANEYOS = "true";
+    # terminal-browser's Kitty-graphics-protocol probe writes a query and
+    # waits ~500ms for the terminal's reply on stdin. Under tmux that reply
+    # never makes it back to the app (tmux answers some query sequences
+    # itself instead of relaying the real terminal's response), so the probe
+    # always reports "unsupported" even though this host's terminal
+    # (Ghostty) supports the protocol fine outside tmux. Skip the probe.
+    PIXEL_SKIP_GRAPHICS_CHECK = "1";
     # Force uv to always provision its own python-build-standalone interpreter
     # instead of picking up the Nix system Python. The system Python's ELF
     # interpreter already points at a Nix store glibc, which bypasses nix-ld's
