@@ -17,6 +17,13 @@ let
   joplin = pkgs.callPackage ./joplin.nix { };
   task-tui = pkgs.callPackage ./task-tui.nix { };
   terminal-browser = pkgs.callPackage ./terminal-browser.nix { };
+  # ranger's "ueberzug" preview method spawns a binary literally named `ueberzug` and talks
+  # a JSON-lines protocol to it; ueberzugpp implements the same protocol. Force the kitty
+  # graphics protocol backend: auto-detection picks x11 (via XWayland) under Hyprland,
+  # which pops a real floating window instead of drawing inline.
+  ueberzug-compat = pkgs.writeShellScriptBin "ueberzug" ''
+    exec ${pkgs.ueberzugpp}/bin/ueberzugpp "$@" --output kitty
+  '';
 in
 {
   # Override ipu6-camera-hal to build with ipu6epmtl platform plugin.
@@ -474,7 +481,7 @@ in
     tig
     viu
     pkgs-unstable.yazi # nixpkgs-26.05's yazi is too old for current plugins (e.g. piper's @since gate)
-    ueberzug
+    ueberzug-compat
     ueberzugpp
     ncdu
     gnome-disk-utility
